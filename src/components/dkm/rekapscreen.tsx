@@ -1,6 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { formatCurrency, safeNumber } from '@/lib/format';
-import { ProgressBar } from './ProgressBar';
+import { ProgressBar } from './progressbar';
 import {
   Wallet, TrendingUp, TrendingDown, BarChart3, Clock,
   ArrowUpCircle, ArrowDownCircle, AlertCircle, Loader2
