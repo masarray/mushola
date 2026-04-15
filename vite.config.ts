@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   // GANTI 'nama-repo-anda' dengan nama repository GitHub Anda yang sebenarnya
-  base: "/progress-nurturer-hub/", 
+  base: "/mushola/", 
   server: {
     host: "::",
     port: 8080,
