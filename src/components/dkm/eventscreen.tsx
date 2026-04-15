@@ -1,6 +1,6 @@
 import { PublicData } from "@/lib/api";
 import { formatCurrency, safeNumber, getProgressColor } from "@/lib/format";
-import { ProgressBar } from "./ProgressBar";
+import { ProgressBar } from "./Progressbar";
 import { Users, CircleDollarSign, Layers, BarChart3 } from "lucide-react";
 
 interface EventScreenProps {
