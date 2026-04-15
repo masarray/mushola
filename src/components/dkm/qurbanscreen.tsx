@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
 import { apiGetShohibulList, apiSubmitQurbanPayment, type QurbanRow } from '@/lib/api';
 import { formatCurrency, safeNumber } from '@/lib/format';
-import { ProgressBar } from './ProgressBar';
+import { ProgressBar } from './progressbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
