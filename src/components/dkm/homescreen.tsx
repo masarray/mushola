@@ -1,6 +1,6 @@
 import { PublicData } from "@/lib/api";
 import { formatCurrency, safeNumber, getBalanceTone } from "@/lib/format";
-import { ProgressBar } from "./ProgressBar";
+import { ProgressBar } from "./progressbar";
 import { TrendingUp, TrendingDown, Wallet, Landmark, Moon, ArrowRight } from "lucide-react";
 
 interface HomeScreenProps {
