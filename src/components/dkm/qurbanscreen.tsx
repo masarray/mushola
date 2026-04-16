@@ -74,9 +74,9 @@ export function QurbanScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
 
-  const rows = internalData?.qurbanRows || [];
-  const groups = internalData?.qurban?.groups || [];
-  const qurbanPayments = internalData?.qurbanPayments || [];
+  const rows = Array.isArray(internalData?.qurbanRows) ? internalData.qurbanRows : [];
+  const groups = Array.isArray(internalData?.qurban?.groups) ? internalData.qurban.groups : [];
+  const qurbanPayments = Array.isArray(internalData?.qurbanPayments) ? internalData.qurbanPayments : [];
 
   const normalizedRows = useMemo(() => {
     return rows.map((r: any) => {
@@ -110,6 +110,13 @@ export function QurbanScreen() {
     if (!selected) return [];
     return buildQuickAmounts(selected.sisaBayarSmart);
   }, [selected]);
+    if (!internalData) {
+    return (
+      <div className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+        <div className="text-sm text-muted-foreground">Memuat data qurban...</div>
+      </div>
+    );
+  }
 
   async function handleSubmit() {
     if (!user || !selected) return;
