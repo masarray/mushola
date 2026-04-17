@@ -12,6 +12,7 @@ import {
 interface EventScreenProps {
   data: PublicData | null;
   loading: boolean;
+  isRefreshing?: boolean;
 }
 
 type QurbanGroup = NonNullable<PublicData["qurban"]["groups"]>[number] & {
@@ -61,7 +62,11 @@ function getGroupBadge(group: {
   };
 }
 
-export function EventScreen({ data, loading }: EventScreenProps) {
+export function EventScreen({
+  data,
+  loading,
+  isRefreshing = false,
+}: EventScreenProps) {
   const qurban = data?.qurban;
   const groups = qurban?.groups || [];
   const qurbanFilled = safeNumber(qurban?.totalFilled);
@@ -69,12 +74,20 @@ export function EventScreen({ data, loading }: EventScreenProps) {
   const qurbanRemaining = safeNumber(qurban?.remainingNominal);
   const qurbanCollected = safeNumber(qurban?.totalNominal);
   const qurbanPct = safeNumber(qurban?.progressPct);
+  const isInitialLoading = loading && !data;
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in pb-2">
       <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,250,248,1))]" />
         <div className="relative p-5">
+          {isRefreshing && (
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/85 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)]">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+              Menyinkronkan data qurban
+            </div>
+          )}
+
           <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
             <Sparkles className="h-3.5 w-3.5" />
             Qurban Tahun Ini
@@ -85,22 +98,24 @@ export function EventScreen({ data, loading }: EventScreenProps) {
           </div>
 
           <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-muted-foreground">
-            {qurbanRemaining > 0
-              ? `Sudah terisi ${qurbanFilled}/${qurbanSlots} peserta qurban. Kurang ${Math.max(0, qurbanSlots - qurbanFilled)} peserta lagi. Dana qurban masih kurang ${formatCurrency(qurbanRemaining)}.`
-              : `Seluruh slot sudah terpenuhi. Dana qurban terkumpul ${formatCurrency(qurbanCollected)}.`}
+            {isInitialLoading
+              ? "Mengambil ringkasan qurban terbaru dari spreadsheet..."
+              : qurbanRemaining > 0
+                ? `Sudah terisi ${qurbanFilled}/${qurbanSlots} peserta qurban. Kurang ${Math.max(0, qurbanSlots - qurbanFilled)} peserta lagi. Dana qurban masih kurang ${formatCurrency(qurbanRemaining)}.`
+                : `Seluruh slot sudah terpenuhi. Dana qurban terkumpul ${formatCurrency(qurbanCollected)}.`}
           </p>
 
           <div className="mt-5 grid grid-cols-[1fr_2fr] gap-3">
             <SummaryCard
               icon={<Users className="h-4 w-4 text-emerald-700" />}
               label="Peserta"
-              value={`${qurbanFilled}/${qurbanSlots}`}
+              value={isInitialLoading ? null : `${qurbanFilled}/${qurbanSlots}`}
               subtext={`Yuk! ${Math.max(0, qurbanSlots - qurbanFilled)} orang lagi...`}
             />
             <SummaryCard
               icon={<CircleDollarSign className="h-4 w-4 text-amber-700" />}
               label="Dana Terkumpul"
-              value={formatCurrency(qurbanCollected)}
+              value={isInitialLoading ? null : formatCurrency(qurbanCollected)}
               subtext={
                 qurbanRemaining > 0
                   ? `Masih kurang ${formatCurrency(qurbanRemaining)}`
@@ -116,9 +131,11 @@ export function EventScreen({ data, loading }: EventScreenProps) {
                   Masih ada kesempatan ikut qurban
                 </div>
                 <div className="mt-1 text-sm leading-relaxed text-emerald-800/80">
-                  {qurbanRemaining > 0
-                    ? `Saat ini masih tersedia ${Math.max(0, qurbanSlots - qurbanFilled)} slot. Warga bisa melihat grup yang masih terbuka untuk bergabung.`
-                    : "Seluruh slot sudah penuh. Silakan hubungi panitia bila ingin masuk daftar cadangan."}
+                  {isInitialLoading
+                    ? "Daftar grup qurban sedang disiapkan..."
+                    : qurbanRemaining > 0
+                      ? `Saat ini masih tersedia ${Math.max(0, qurbanSlots - qurbanFilled)} slot. Warga bisa melihat grup yang masih terbuka untuk bergabung.`
+                      : "Seluruh slot sudah penuh. Silakan hubungi panitia bila ingin masuk daftar cadangan."}
                 </div>
               </div>
 
@@ -157,15 +174,15 @@ export function EventScreen({ data, loading }: EventScreenProps) {
           </div>
 
           <div className="shrink-0 rounded-[18px] bg-amber-100 px-3 py-2 text-[15px] font-extrabold text-amber-800">
-            {formatPercent(qurbanPct)}
+            {isInitialLoading ? "..." : formatPercent(qurbanPct)}
           </div>
         </div>
 
         <div className="mt-5 space-y-4">
-          {loading ? (
-            <div className="rounded-[24px] border border-border bg-card p-4 text-center text-sm text-muted-foreground shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-              Memuat data grup...
-            </div>
+          {isInitialLoading ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <GroupCardPlaceholder key={index} />
+            ))
           ) : groups.length === 0 ? (
             <div className="rounded-[24px] border border-border bg-card p-4 text-center shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
               <div className="text-sm font-semibold text-foreground">
@@ -230,7 +247,7 @@ function SummaryCard({
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: string | null;
   subtext?: string;
 }) {
   return (
@@ -243,14 +260,35 @@ function SummaryCard({
           {label}
         </div>
       </div>
-      <div className="mt-3 text-[1.65rem] leading-tight font-black tracking-[-0.03em] text-foreground sm:text-[1.6rem]">
-        {value}
-      </div>
+      {value ? (
+        <div className="mt-3 text-[1.35rem] leading-tight font-black tracking-[-0.03em] text-foreground sm:text-[1.75rem]">
+          {value}
+        </div>
+      ) : (
+        <div className="mt-3 h-8 w-28 animate-pulse rounded-full bg-muted/50 sm:h-9 sm:w-36" />
+      )}
       {subtext && (
         <div className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
           {subtext}
         </div>
       )}
+    </div>
+  );
+}
+
+function GroupCardPlaceholder() {
+  return (
+    <div className="rounded-[24px] border border-border bg-card p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="h-4 w-28 animate-pulse rounded-full bg-muted/60" />
+          <div className="mt-2 h-3 w-20 animate-pulse rounded-full bg-muted/40" />
+        </div>
+        <div className="h-6 w-20 animate-pulse rounded-full bg-muted/45" />
+      </div>
+      <div className="mt-4 h-2 w-full animate-pulse rounded-full bg-muted/35" />
+      <div className="mt-4 h-2 w-full animate-pulse rounded-full bg-muted/25" />
+      <div className="mt-2 h-3 w-36 animate-pulse rounded-full bg-muted/30" />
     </div>
   );
 }

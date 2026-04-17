@@ -18,6 +18,7 @@ interface HomeScreenProps {
   data: PublicData | null;
   loading: boolean;
   error: string | null;
+  isRefreshing?: boolean;
   onNavigate?: (screen: "home" | "event" | "login") => void;
 }
 
@@ -25,10 +26,12 @@ export function HomeScreen({
   data,
   loading,
   error,
+  isRefreshing = false,
   onNavigate,
 }: HomeScreenProps) {
   const summary = data?.summary || ({} as PublicData["summary"]);
   const qurban = data?.qurban || ({} as PublicData["qurban"]);
+  const isInitialLoading = loading && !data;
 
   const groups = Array.isArray(qurban?.groups) ? qurban.groups : [];
   const visibleGroups = groups.slice(0, 3);
@@ -68,6 +71,13 @@ export function HomeScreen({
         <div className="absolute inset-x-0 top-0 h-px bg-white/18 pointer-events-none" />
 
         <div className="relative z-10 p-4 text-white sm:p-5">
+          {isRefreshing && (
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/78">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
+              Memperbarui data mushola
+            </div>
+          )}
+
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="text-[15px] font-bold tracking-tight text-white/96">
@@ -93,11 +103,13 @@ export function HomeScreen({
                   <span>Kas Operasional Mushola</span>
                 </div>
                 <div className="mt-2 text-[2.45rem] leading-none font-black tracking-[-0.03em] text-white">
-                  {loading
-                    ? "Memuat..."
-                    : error
-                      ? "Gagal"
-                      : formatCurrency(saldoOperasional)}
+                  {isInitialLoading ? (
+                    <ValueShimmer className="h-10 w-44 bg-white/18" />
+                  ) : error ? (
+                    "Gagal"
+                  ) : (
+                    formatCurrency(saldoOperasional)
+                  )}
                 </div>
                 <div className="mt-2 text-[11px] text-white/72">
                   Dana untuk kebutuhan harian mushola
@@ -118,11 +130,13 @@ export function HomeScreen({
                   <span>Dana Qurban</span>
                 </div>
                 <div className="mt-2 text-[2rem] leading-none font-black tracking-[-0.02em] text-white">
-                  {loading
-                    ? "Memuat..."
-                    : error
-                      ? "Gagal"
-                      : formatCurrency(saldoQurban)}
+                  {isInitialLoading ? (
+                    <ValueShimmer className="h-9 w-36 bg-white/16" />
+                  ) : error ? (
+                    "Gagal"
+                  ) : (
+                    formatCurrency(saldoQurban)
+                  )}
                 </div>
                 <div className="mt-1 text-[11px] leading-relaxed text-white/70">
                   Dana khusus qurban dikelola terpisah dari kas operasional.
@@ -139,9 +153,9 @@ export function HomeScreen({
             <ActionCard
               title="Informasi Qurban"
               subtitle={
-                loading
-                  ? "..."
-                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot Â· ${qurbanPct}%`
+                isInitialLoading
+                  ? "Menyiapkan progres qurban..."
+                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot · ${qurbanPct}%`
               }
               onClick={() => onNavigate?.("event")}
             />
@@ -164,14 +178,16 @@ export function HomeScreen({
               Progres Qurban Warga
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              {qurbanRemaining > 0
-                ? `Sudah terkumpul ${formatCurrency(qurbanCollected)} dan masih kurang ${formatCurrency(qurbanRemaining)}.`
-                : `Dana qurban sudah terkumpul ${formatCurrency(qurbanCollected)}.`}
+              {isInitialLoading
+                ? "Menyusun ringkasan qurban terbaru..."
+                : qurbanRemaining > 0
+                  ? `Sudah terkumpul ${formatCurrency(qurbanCollected)} dan masih kurang ${formatCurrency(qurbanRemaining)}.`
+                  : `Dana qurban sudah terkumpul ${formatCurrency(qurbanCollected)}.`}
             </p>
           </div>
 
           <div className="shrink-0 rounded-[18px] bg-amber-100 px-3 py-2 text-[15px] font-extrabold text-amber-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
-            {qurbanPct}%
+            {isInitialLoading ? "..." : `${qurbanPct}%`}
           </div>
         </div>
 
@@ -181,7 +197,9 @@ export function HomeScreen({
 
         <div className="mt-3 flex items-center justify-between gap-3 text-sm">
           <div className="text-muted-foreground">
-            {qurbanFilled}/{qurbanSlots || qurbanFilled} slot terisi
+            {isInitialLoading
+              ? "Slot qurban sedang dimuat..."
+              : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot terisi`}
           </div>
           <button
             type="button"
@@ -198,13 +216,13 @@ export function HomeScreen({
         <MiniStat
           icon={<TrendingUp className="h-4 w-4 text-primary" />}
           label="Kas Masuk"
-          value={loading ? "..." : formatCurrency(totalPemasukan)}
+          value={isInitialLoading ? null : formatCurrency(totalPemasukan)}
           hint="Riwayat transaksi masuk"
         />
         <MiniStat
           icon={<TrendingDown className="h-4 w-4 text-destructive" />}
           label="Kas Keluar"
-          value={loading ? "..." : formatCurrency(totalPengeluaran)}
+          value={isInitialLoading ? null : formatCurrency(totalPengeluaran)}
           hint="Riwayat transaksi keluar"
         />
       </section>
@@ -231,6 +249,12 @@ export function HomeScreen({
               <QurbanGroupCard key={group.groupName} group={group} />
             ))}
           </div>
+        ) : isInitialLoading ? (
+          <div className="mt-4 space-y-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <CompactGroupPlaceholder key={index} />
+            ))}
+          </div>
         ) : (
           <div className="mt-4 text-sm text-muted-foreground">
             Warga dapat memantau kebutuhan harian mushola dan dana qurban tanpa
@@ -238,6 +262,29 @@ export function HomeScreen({
           </div>
         )}
       </section>
+    </div>
+  );
+}
+
+function ValueShimmer({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`block animate-pulse rounded-full bg-muted/70 ${className}`}
+    />
+  );
+}
+
+function CompactGroupPlaceholder() {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-background px-4 py-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="h-4 w-28 animate-pulse rounded-full bg-muted/60" />
+          <div className="mt-2 h-3 w-40 animate-pulse rounded-full bg-muted/40" />
+        </div>
+        <div className="h-3 w-16 animate-pulse rounded-full bg-muted/40" />
+      </div>
+      <div className="mt-3 h-2 w-full animate-pulse rounded-full bg-muted/30" />
     </div>
   );
 }
@@ -413,7 +460,7 @@ function MiniStat({
 }: {
   icon: ReactNode;
   label: string;
-  value: string;
+  value: string | null;
   hint?: string;
 }) {
   return (
@@ -424,9 +471,13 @@ function MiniStat({
           {label}
         </span>
       </div>
-      <div className="mt-3 text-[1.4rem] leading-none font-black tracking-[-0.02em] text-foreground">
-        {value}
-      </div>
+      {value ? (
+        <div className="mt-3 text-[1.4rem] leading-none font-black tracking-[-0.02em] text-foreground">
+          {value}
+        </div>
+      ) : (
+        <div className="mt-3 h-7 w-28 animate-pulse rounded-full bg-muted/55" />
+      )}
       {hint && (
         <div className="mt-2 text-[11px] text-muted-foreground">{hint}</div>
       )}
