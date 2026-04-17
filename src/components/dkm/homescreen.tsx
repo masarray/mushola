@@ -12,6 +12,8 @@ import {
   Wallet,
 } from "lucide-react";
 
+const APP_ICON_URL = `${import.meta.env.BASE_URL}icon.svg`;
+
 interface HomeScreenProps {
   data: PublicData | null;
   loading: boolean;
@@ -66,13 +68,21 @@ export function HomeScreen({
         <div className="absolute inset-x-0 top-0 h-px bg-white/18 pointer-events-none" />
 
         <div className="relative z-10 p-4 text-white sm:p-5">
-          <div>
-            <div className="text-[15px] font-bold tracking-tight text-white/96">
-              Mushola Raudhatul Mukminin
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="text-[15px] font-bold tracking-tight text-white/96">
+                Mushola Raudhatul Mukminin
+              </div>
+              <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">
+                Transparansi Keuangan Mushola
+              </div>
             </div>
-            <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">
-              Transparansi Keuangan Mushola
-            </div>
+
+            <img
+              src={APP_ICON_URL}
+              alt="Icon Mushola"
+              className="mt-1 h-10 w-10 shrink-0 object-contain"
+            />
           </div>
 
           <div className="mt-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.10)]">
@@ -131,7 +141,7 @@ export function HomeScreen({
               subtitle={
                 loading
                   ? "..."
-                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot · ${qurbanPct}%`
+                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot Â· ${qurbanPct}%`
               }
               onClick={() => onNavigate?.("event")}
             />
@@ -303,11 +313,11 @@ function SemiGauge({ value, label = "" }: { value: number; label?: string }) {
   const safeValue = Math.max(0, Math.min(100, Math.round(value || 0)));
   const angle = (safeValue / 100) * 180;
 
-  let progressColor = "#ef4444"; // merah
+  let progressColor = "#ef4444";
   if (safeValue >= 67) {
-    progressColor = "#22c55e"; // hijau
+    progressColor = "#22c55e";
   } else if (safeValue >= 34) {
-    progressColor = "#f59e0b"; // orange
+    progressColor = "#f59e0b";
   }
 
   return (
@@ -317,7 +327,6 @@ function SemiGauge({ value, label = "" }: { value: number; label?: string }) {
       </div>
 
       <div className="relative mt-1.5 h-[42px] w-[78px] overflow-hidden">
-        {/* track */}
         <div
           className="absolute left-1/2 top-[4px] h-[64px] w-[64px] -translate-x-1/2 rounded-full border-[5px] border-white/14"
           style={{
@@ -326,7 +335,6 @@ function SemiGauge({ value, label = "" }: { value: number; label?: string }) {
           }}
         />
 
-        {/* progress */}
         <div
           className="absolute left-1/2 top-[4px] h-[64px] w-[64px] -translate-x-1/2 rounded-full border-[5px] border-transparent"
           style={{
@@ -339,7 +347,6 @@ function SemiGauge({ value, label = "" }: { value: number; label?: string }) {
           }}
         />
 
-        {/* value */}
         <div className="absolute inset-x-0 bottom-[1px] flex items-center justify-center">
           <div className="text-[13px] font-extrabold leading-none text-white/96">
             {safeValue}%
