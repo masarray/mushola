@@ -243,7 +243,7 @@ function SummaryCard({
           {label}
         </div>
       </div>
-      <div className="mt-3 text-[1.75rem] leading-none font-black tracking-[-0.03em] text-foreground">
+      <div className="mt-3 text-[1.65rem] leading-tight font-black tracking-[-0.03em] text-foreground sm:text-[1.6rem]">
         {value}
       </div>
       {subtext && (

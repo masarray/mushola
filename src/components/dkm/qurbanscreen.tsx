@@ -80,9 +80,21 @@ export function QurbanScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
 
-  const rows = Array.isArray(internalData?.qurbanRows) ? internalData.qurbanRows : [];
-  const groups = Array.isArray(internalData?.qurban?.groups) ? internalData.qurban.groups : [];
-  const qurbanPayments = Array.isArray(internalData?.qurbanPayments) ? internalData.qurbanPayments : [];
+  const rows = useMemo(
+    () =>
+      Array.isArray(internalData?.qurbanRows) ? internalData.qurbanRows : [],
+    [internalData?.qurbanRows],
+  );
+  const groups = useMemo(
+    () =>
+      Array.isArray(internalData?.qurban?.groups) ? internalData.qurban.groups : [],
+    [internalData?.qurban?.groups],
+  );
+  const qurbanPayments = useMemo(
+    () =>
+      Array.isArray(internalData?.qurbanPayments) ? internalData.qurbanPayments : [],
+    [internalData?.qurbanPayments],
+  );
 
   const normalizedRows = useMemo(() => {
     return rows.map((r: QurbanRow) => {
