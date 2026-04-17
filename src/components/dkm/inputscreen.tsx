@@ -16,16 +16,20 @@ import {
   CheckCircle2,
   Zap,
   Wallet,
+  X,
+  ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type TransactionMode = 'HARIAN' | 'RAMADHAN';
 type TransactionType = 'PEMASUKAN' | 'PENGELUARAN';
 
+const MANUAL_CATEGORY = '__LAINNYA__';
+
 const QUICK_CATEGORIES: Record<string, string[]> = {
-  HARIAN_PEMASUKAN: ['Kencleng Keliling', 'Infaq Transfer'],
-  HARIAN_PENGELUARAN: ['Token Listrik', 'Petugas Kebersihan'],
-  RAMADHAN_PEMASUKAN: ['Kencleng Tarawih', 'Infaq Ramadhan'],
+  HARIAN_PEMASUKAN: ['Kencleng Keliling', 'Infaq Transfer', 'Donasi Warga'],
+  HARIAN_PENGELUARAN: ['Token Listrik', 'Petugas Kebersihan', 'Kegiatan Mushola'],
+  RAMADHAN_PEMASUKAN: ['Kencleng Tarawih', 'Infaq Ramadhan', 'Donasi Ramadhan'],
   RAMADHAN_PENGELUARAN: [
     'Honor Imam Kultum Tarawih',
     'Buka Puasa Bersama',
@@ -58,11 +62,14 @@ export function InputScreen() {
   const [jenis, setJenis] = useState<TransactionType>('PEMASUKAN');
   const [tanggal, setTanggal] = useState(() => new Date().toISOString().split('T')[0]);
   const [kategori, setKategori] = useState('');
+  const [manualCategory, setManualCategory] = useState('');
+  const [manualMode, setManualMode] = useState(false);
   const [metode, setMetode] = useState<'Cash' | 'Transfer'>('Cash');
   const [nominal, setNominal] = useState('');
   const [keterangan, setKeterangan] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
+  const [showContextPicker, setShowContextPicker] = useState(false);
 
   useEffect(() => {
     try {
@@ -108,14 +115,24 @@ export function InputScreen() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!manualMode) return;
+    const timer = window.setTimeout(() => {
+      categoryRef.current?.focus();
+    }, 60);
+
+    return () => window.clearTimeout(timer);
+  }, [manualMode]);
+
   const event = mode === 'RAMADHAN' ? 'Ramadhan' : 'Operasional';
   const chipKey = `${mode}_${jenis}`;
   const chips = QUICK_CATEGORIES[chipKey] || [];
   const nominalValue = Number(nominal || 0);
+  const effectiveKategori = manualMode ? manualCategory.trim() : kategori.trim();
 
   const canSubmit = useMemo(() => {
-    return Boolean(user && kategori.trim() && nominalValue > 0 && !submitting);
-  }, [user, kategori, nominalValue, submitting]);
+    return Boolean(user && effectiveKategori && nominalValue > 0 && !submitting);
+  }, [user, effectiveKategori, nominalValue, submitting]);
 
   const resetFormSmart = useCallback(() => {
     setTanggal(new Date().toISOString().split('T')[0]);
@@ -134,18 +151,40 @@ export function InputScreen() {
   }, []);
 
   const handleQuickCategory = useCallback((value: string) => {
+    if (value === MANUAL_CATEGORY) {
+      setKategori('');
+      setManualCategory('');
+      setManualMode(true);
+      return;
+    }
+
+    setManualMode(false);
+    setManualCategory('');
     setKategori(value);
     window.setTimeout(() => {
       nominalRef.current?.focus();
     }, 50);
   }, []);
 
+  const clearNominal = useCallback(() => {
+    setNominal('');
+    nominalRef.current?.focus();
+  }, []);
+
+  const handleContextChange = useCallback((value: TransactionMode) => {
+    setMode(value);
+    setShowContextPicker(false);
+    setKategori('');
+    setManualCategory('');
+    setManualMode(false);
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     if (!user) return;
 
-    if (!kategori.trim()) {
-      toast({ title: 'Kategori wajib diisi', variant: 'destructive' });
-      categoryRef.current?.focus();
+    if (!effectiveKategori) {
+      toast({ title: 'Jenis transaksi wajib diisi', variant: 'destructive' });
+      if (manualMode) categoryRef.current?.focus();
       return;
     }
 
@@ -163,7 +202,7 @@ export function InputScreen() {
         email: user.email,
         tanggal,
         jenis,
-        kategori: kategori.trim(),
+        kategori: effectiveKategori,
         event,
         metode,
         nominal: num,
@@ -193,7 +232,7 @@ export function InputScreen() {
     }
   }, [
     user,
-    kategori,
+    effectiveKategori,
     nominal,
     tanggal,
     jenis,
@@ -203,11 +242,11 @@ export function InputScreen() {
     toast,
     refreshInternal,
     resetFormSmart,
+    manualMode,
   ]);
 
   return (
     <div className="space-y-4 pb-4">
-      {/* Quick header */}
       <div className="rounded-[28px] border bg-card/90 backdrop-blur-sm shadow-soft overflow-hidden">
         <div className="p-4 sm:p-5 space-y-4">
           <div className="flex items-start justify-between gap-3">
@@ -220,40 +259,51 @@ export function InputScreen() {
                 Input Transaksi
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Fokus ke nominal, kategori, lalu simpan.
+                Pilih pemasukan atau pengeluaran, isi nominal, lalu simpan.
               </p>
             </div>
 
-            <div className="rounded-2xl border bg-background px-3 py-2 text-right min-w-[112px]">
+            <div className="relative min-w-[128px] text-right">
               <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Event
+                Konteks
               </div>
-              <div className="mt-1 text-sm font-bold text-foreground">{event}</div>
+              <button
+                type="button"
+                onClick={() => setShowContextPicker((prev) => !prev)}
+                className="mt-1 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-bold text-foreground hover:bg-muted/50"
+              >
+                {event}
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
+
+              {showContextPicker && (
+                <div className="absolute right-0 top-full z-10 mt-2 w-40 rounded-2xl border border-border bg-card p-2 text-left shadow-soft">
+                  <div className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                    Pilih konteks
+                  </div>
+                  {([
+                    ['HARIAN', 'Operasional'],
+                    ['RAMADHAN', 'Ramadhan'],
+                  ] as const).map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleContextChange(value)}
+                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold transition-all ${
+                        mode === value
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-foreground hover:bg-muted/50'
+                      }`}
+                    >
+                      <span>{label}</span>
+                      {mode === value && <span className="text-xs font-bold">Aktif</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Mode tabs */}
-          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-muted/40 p-1">
-            {(['HARIAN', 'RAMADHAN'] as TransactionMode[]).map((m) => {
-              const active = mode === m;
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => setMode(m)}
-                  className={`rounded-2xl px-3 py-3 text-sm font-bold transition-all duration-200 ${
-                    active
-                      ? 'bg-card text-foreground shadow-soft'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {m === 'HARIAN' ? 'Harian' : 'Ramadhan'}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Type toggle */}
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -284,14 +334,25 @@ export function InputScreen() {
         </div>
       </div>
 
-      {/* Main card */}
       <div className="rounded-[28px] border bg-card shadow-soft overflow-hidden">
         <div className="p-4 sm:p-5 space-y-5">
-          {/* Nominal first */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              <Wallet className="h-4 w-4" />
-              Nominal
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                <Wallet className="h-4 w-4" />
+                Nominal
+              </div>
+
+              {nominalValue > 0 && (
+                <button
+                  type="button"
+                  onClick={clearNominal}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  Reset
+                </button>
+              )}
             </div>
 
             <div className="rounded-[24px] border bg-background p-3">
@@ -329,52 +390,72 @@ export function InputScreen() {
             </div>
           </div>
 
-          {/* Quick category */}
-          {chips.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                <Zap className="h-4 w-4" />
-                Kategori Cepat
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {chips.map((c) => {
-                  const active = kategori === c;
-                  return (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => handleQuickCategory(c)}
-                      className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                        active
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted/60 text-muted-foreground hover:bg-muted'
-                      }`}
-                    >
-                      {c}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Category manual */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
               <Tag className="h-4 w-4" />
-              Kategori
+              Uang Ini Untuk Apa?
             </div>
-            <Input
-              ref={categoryRef}
-              value={kategori}
-              onChange={(e) => setKategori(e.target.value)}
-              placeholder="Nama kategori..."
-              className="h-12 rounded-2xl bg-background"
-            />
+            <p className="text-sm text-muted-foreground">
+              Pilih jenis transaksi yang paling sesuai.
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {chips.map((c) => {
+                const active = !manualMode && kategori === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => handleQuickCategory(c)}
+                    className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                      active
+                        ? 'bg-primary text-primary-foreground shadow-soft'
+                        : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => handleQuickCategory(MANUAL_CATEGORY)}
+                className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                  manualMode
+                    ? 'bg-primary text-primary-foreground shadow-soft'
+                    : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                }`}
+              >
+                Lainnya
+              </button>
+            </div>
+
+            {manualMode && (
+              <Input
+                ref={categoryRef}
+                value={manualCategory}
+                onChange={(e) => setManualCategory(e.target.value)}
+                placeholder="Tulis kategori lain"
+                className="h-12 rounded-2xl bg-background"
+              />
+            )}
+
+            {!manualMode && kategori.trim() && (
+              <div className="text-xs text-muted-foreground">
+                Kategori terpilih:{' '}
+                <span className="font-semibold text-foreground">{kategori.trim()}</span>
+              </div>
+            )}
+
+            {manualMode && manualCategory.trim() && (
+              <div className="text-xs text-muted-foreground">
+                Kategori manual:{' '}
+                <span className="font-semibold text-foreground">{manualCategory.trim()}</span>
+              </div>
+            )}
           </div>
 
-          {/* Method */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
               <CreditCard className="h-4 w-4" />
@@ -402,7 +483,6 @@ export function InputScreen() {
             </div>
           </div>
 
-          {/* Secondary fields */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
@@ -425,13 +505,12 @@ export function InputScreen() {
               <Input
                 value={keterangan}
                 onChange={(e) => setKeterangan(e.target.value)}
-                placeholder="Opsional"
+                placeholder="Contoh: bayar listrik bulan April"
                 className="h-12 rounded-2xl bg-background"
               />
             </div>
           </div>
 
-          {/* Status strip */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
               {event}
@@ -450,7 +529,6 @@ export function InputScreen() {
             </span>
           </div>
 
-          {/* Save success */}
           {justSaved && (
             <div className="flex items-center gap-2 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary">
               <CheckCircle2 className="h-4 w-4" />
@@ -458,11 +536,10 @@ export function InputScreen() {
             </div>
           )}
 
-          {/* Submit */}
           <Button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className="h-14 w-full rounded-full text-base font-bold shadow-soft"
+            className="h-14 w-full rounded-full bg-primary text-base font-bold shadow-[0_10px_24px_rgba(22,101,52,0.22)] transition-all active:scale-[0.98] disabled:shadow-none"
           >
             {submitting ? (
               <>
@@ -479,9 +556,9 @@ export function InputScreen() {
         </div>
       </div>
 
-      {/* Helper footer */}
       <div className="rounded-3xl border bg-card/70 px-4 py-3 text-sm text-muted-foreground">
-        Tip cepat: pilih kategori cepat, isi nominal, lalu simpan. Pilihan terakhir akan diingat di perangkat ini.
+        Pilih kategori yang paling mendekati. Jika perlu penjelasan lebih rinci,
+        tulis di keterangan.
       </div>
     </div>
   );
