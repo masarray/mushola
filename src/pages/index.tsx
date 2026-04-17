@@ -1,20 +1,20 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { BottomNav, type Screen } from '@/components/dkm/bottomnav';
-import { HomeScreen } from '@/components/dkm/homescreen';
-import { EventScreen } from '@/components/dkm/eventscreen';
-import { LoginScreen } from '@/components/dkm/loginscreen';
-import { InputScreen } from '@/components/dkm/inputscreen';
-import { RekapScreen } from '@/components/dkm/rekapscreen';
-import { QurbanScreen } from '@/components/dkm/qurbanscreen';
-import { AuditScreen } from '@/components/dkm/auditscreen';
-import { AccountScreen } from '@/components/dkm/accountscreen';
-import { InstallPrompt } from '@/components/dkm/installprompt';
-import { getErrorMessage, loadPublicData, type PublicData } from '@/lib/api';
-import { useAuth } from '@/lib/auth';
-import { RefreshCw } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { BottomNav, type Screen } from "@/components/dkm/bottomnav";
+import { HomeScreen } from "@/components/dkm/homescreen";
+import { EventScreen } from "@/components/dkm/eventscreen";
+import { LoginScreen } from "@/components/dkm/loginscreen";
+import { InputScreen } from "@/components/dkm/inputscreen";
+import { RekapScreen } from "@/components/dkm/rekapscreen";
+import { QurbanScreen } from "@/components/dkm/qurbanscreen";
+import { AuditScreen } from "@/components/dkm/auditscreen";
+import { AccountScreen } from "@/components/dkm/accountscreen";
+import { InstallPrompt } from "@/components/dkm/installprompt";
+import { getErrorMessage, loadPublicData, type PublicData } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { RefreshCw } from "lucide-react";
 
 const APP_ICON_URL = `${import.meta.env.BASE_URL}icon.svg`;
-const PUBLIC_CACHE_KEY = 'dkm_public_data_cache_v1';
+const PUBLIC_CACHE_KEY = "dkm_public_data_cache_v1";
 const PUBLIC_CACHE_TTL_MS = 1000 * 60 * 3;
 
 type PublicCachePayload = {
@@ -24,7 +24,7 @@ type PublicCachePayload = {
 
 const Index = () => {
   const { user } = useAuth();
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<Screen>("home");
   const [data, setData] = useState<PublicData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +50,7 @@ const Index = () => {
           if (
             parsed &&
             parsed.data &&
-            typeof parsed.savedAt === 'number' &&
+            typeof parsed.savedAt === "number" &&
             now - parsed.savedAt < PUBLIC_CACHE_TTL_MS
           ) {
             setData(parsed.data);
@@ -72,8 +72,8 @@ const Index = () => {
     const loadMessageTimer = window.setTimeout(() => {
       setLoadMessage(
         hadFreshCache
-          ? 'Memperbarui ringkasan mushola dari spreadsheet...'
-          : 'Mengambil data terbaru dari spreadsheet...',
+          ? "Memperbarui ringkasan mushola dari spreadsheet..."
+          : "Mengambil data terbaru dari spreadsheet...",
       );
     }, 700);
 
@@ -108,13 +108,21 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
-      setScreen(user.role === 'BENDAHARA' ? 'input' : 'rekap');
+      setScreen(user.role === "BENDAHARA" ? "input" : "rekap");
+      return;
     }
+
+    setScreen((prev) => {
+      if (prev === "home" || prev === "event" || prev === "login") {
+        return prev;
+      }
+      return "home";
+    });
   }, [user]);
 
   const navigate = useCallback((s: Screen) => {
     setScreen(s);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleLoginSuccess = useCallback(() => {
@@ -146,14 +154,14 @@ const Index = () => {
   }, [pullDistance, refreshing, fetchData]);
 
   const screenTitles: Record<Screen, string> = {
-    home: 'Dashboard Publik',
-    event: 'Event Qurban',
-    login: 'Login Internal',
-    input: 'Input Transaksi',
-    rekap: 'Rekap Keuangan',
-    qurban: 'Manajemen Qurban',
-    audit: 'Audit & Koreksi',
-    account: 'Akun Saya',
+    home: "Dashboard Publik",
+    event: "Event Qurban",
+    login: "Login Internal",
+    input: "Input Transaksi",
+    rekap: "Rekap Keuangan",
+    qurban: "Manajemen Qurban",
+    audit: "Audit & Koreksi",
+    account: "Akun Saya",
   };
 
   return (
@@ -170,14 +178,16 @@ const Index = () => {
       >
         <RefreshCw
           className={`h-5 w-5 transition-transform duration-200 ${
-            refreshing ? 'animate-spin text-primary' : ''
+            refreshing ? "animate-spin text-primary" : ""
           } ${
             pullDistance >= PULL_THRESHOLD
-              ? 'scale-110 text-primary'
-              : 'text-muted-foreground'
+              ? "scale-110 text-primary"
+              : "text-muted-foreground"
           }`}
           style={{
-            transform: refreshing ? undefined : `rotate(${pullDistance * 3}deg)`,
+            transform: refreshing
+              ? undefined
+              : `rotate(${pullDistance * 3}deg)`,
           }}
         />
       </div>
@@ -208,7 +218,9 @@ const Index = () => {
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <div className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  {user ? `Panel ${user.role}` : 'Transparansi Keuangan Mushola'}
+                  {user
+                    ? `Panel ${user.role}`
+                    : "Transparansi Keuangan Mushola"}
                 </div>
                 <h1 className="mt-1.5 font-heading text-[24px] leading-[1.1] font-bold tracking-tight text-foreground">
                   {screenTitles[screen]}
@@ -235,7 +247,7 @@ const Index = () => {
         )}
 
         <main>
-          {screen === 'home' && (
+          {screen === "home" && (
             <HomeScreen
               data={data}
               loading={loading}
@@ -244,23 +256,23 @@ const Index = () => {
               onNavigate={navigate}
             />
           )}
-          {screen === 'event' && (
+          {screen === "event" && (
             <EventScreen
               data={data}
               loading={loading}
               isRefreshing={isRefreshingFromCache}
               canOpenGroupsDetail={Boolean(user)}
-              onOpenGroupsDetail={() => navigate('qurban')}
+              onOpenGroupsDetail={() => navigate("qurban")}
             />
           )}
-          {screen === 'login' && (
+          {screen === "login" && (
             <LoginScreen onLoginSuccess={handleLoginSuccess} />
           )}
-          {screen === 'input' && <InputScreen />}
-          {screen === 'rekap' && <RekapScreen />}
-          {screen === 'qurban' && <QurbanScreen />}
-          {screen === 'audit' && <AuditScreen />}
-          {screen === 'account' && <AccountScreen />}
+          {screen === "input" && <InputScreen />}
+          {screen === "rekap" && <RekapScreen />}
+          {screen === "qurban" && <QurbanScreen />}
+          {screen === "audit" && <AuditScreen />}
+          {screen === "account" && <AccountScreen />}
         </main>
       </div>
 
