@@ -1,19 +1,25 @@
-import { useAuth } from '@/lib/auth';
+import { useAuth } from "@/lib/auth";
 import {
-  Home, Calendar, LogIn, PenLine, BarChart3,
-  ShieldCheck, User
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  Home,
+  Calendar,
+  LogIn,
+  PenLine,
+  BarChart3,
+  ShieldCheck,
+  User,
+  Beef,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export type Screen =
-  | 'home'
-  | 'event'
-  | 'login'
-  | 'input'
-  | 'rekap'
-  | 'qurban'
-  | 'audit'
-  | 'account';
+  | "home"
+  | "event"
+  | "login"
+  | "input"
+  | "rekap"
+  | "qurban"
+  | "audit"
+  | "account";
 
 interface NavItem {
   screen: Screen;
@@ -22,24 +28,25 @@ interface NavItem {
 }
 
 const PUBLIC_NAV: NavItem[] = [
-  { screen: 'home', label: 'Beranda', icon: Home },
-  { screen: 'event', label: 'Event', icon: Calendar },
-  { screen: 'login', label: 'Login', icon: LogIn },
+  { screen: "home", label: "Beranda", icon: Home },
+  { screen: "event", label: "Event", icon: Calendar },
+  { screen: "qurban", label: "Qurban", icon: Beef },
+  { screen: "login", label: "Login", icon: LogIn },
 ];
 
 const BENDAHARA_NAV: NavItem[] = [
-  { screen: 'input', label: 'Input', icon: PenLine },
-  { screen: 'qurban', label: 'Qurban', icon: Calendar },
-  { screen: 'rekap', label: 'Rekap', icon: BarChart3 },
-  { screen: 'audit', label: 'Audit', icon: ShieldCheck },
-  { screen: 'account', label: 'Akun', icon: User },
+  { screen: "input", label: "Input", icon: PenLine },
+  { screen: "qurban", label: "Qurban", icon: Calendar },
+  { screen: "rekap", label: "Rekap", icon: BarChart3 },
+  { screen: "audit", label: "Audit", icon: ShieldCheck },
+  { screen: "account", label: "Akun", icon: User },
 ];
 
 const PENGURUS_NAV: NavItem[] = [
-  { screen: 'rekap', label: 'Rekap', icon: BarChart3 },
-  { screen: 'qurban', label: 'Qurban', icon: Calendar },
-  { screen: 'audit', label: 'Audit', icon: ShieldCheck },
-  { screen: 'account', label: 'Akun', icon: User },
+  { screen: "rekap", label: "Rekap", icon: BarChart3 },
+  { screen: "qurban", label: "Qurban", icon: Calendar },
+  { screen: "audit", label: "Audit", icon: ShieldCheck },
+  { screen: "account", label: "Akun", icon: User },
 ];
 
 interface BottomNavProps {
@@ -51,7 +58,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
   const { user } = useAuth();
 
   const items = user
-    ? user.role === 'BENDAHARA'
+    ? user.role === "BENDAHARA"
       ? BENDAHARA_NAV
       : PENGURUS_NAV
     : PUBLIC_NAV;
@@ -74,11 +81,19 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
               "flex flex-col items-center gap-0.5 py-2.5 px-3 rounded-2xl transition-all duration-200 active:scale-[0.97] min-w-[48px]",
               isActive
                 ? "bg-dkm-green-soft text-primary font-semibold"
-                : "text-muted-foreground hover:bg-muted/50"
+                : "text-muted-foreground hover:bg-muted/50",
             )}
           >
-            <Icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-muted-foreground")} strokeWidth={isActive ? 2.5 : 2} />
-            <span className="text-[10px] font-semibold leading-tight">{item.label}</span>
+            <Icon
+              className={cn(
+                "w-5 h-5",
+                isActive ? "text-primary" : "text-muted-foreground",
+              )}
+              strokeWidth={isActive ? 2.5 : 2}
+            />
+            <span className="text-[10px] font-semibold leading-tight">
+              {item.label}
+            </span>
           </button>
         );
       })}

@@ -6,6 +6,7 @@ import { LoginScreen } from "@/components/dkm/loginscreen";
 import { InputScreen } from "@/components/dkm/inputscreen";
 import { RekapScreen } from "@/components/dkm/rekapscreen";
 import { QurbanScreen } from "@/components/dkm/qurbanscreen";
+import { PublicQurbanScreen } from "@/components/dkm/publicqurbanscreen";
 import { AuditScreen } from "@/components/dkm/auditscreen";
 import { AccountScreen } from "@/components/dkm/accountscreen";
 import { InstallPrompt } from "@/components/dkm/installprompt";
@@ -159,7 +160,7 @@ const Index = () => {
     login: "Login Internal",
     input: "Input Transaksi",
     rekap: "Rekap Keuangan",
-    qurban: "Manajemen Qurban",
+    qurban: user ? "Manajemen Qurban" : "Info Qurban Warga",
     audit: "Audit & Koreksi",
     account: "Akun Saya",
   };
