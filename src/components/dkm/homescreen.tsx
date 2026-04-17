@@ -48,19 +48,19 @@ export function HomeScreen({
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in pb-1">
-      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_18px_48px_rgba(15,23,42,0.16)]">
+      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_12px_32px_rgba(15,23,42,0.10)]">
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(135deg, rgba(15,23,42,0.98) 0%, rgba(22,101,52,0.94) 56%, rgba(245,158,11,0.10) 100%)",
+              "linear-gradient(135deg, rgba(15,23,42,0.96) 0%, rgba(22,101,52,0.92) 58%, rgba(245,158,11,0.08) 100%)",
           }}
         />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(420px circle at top right, rgba(255,248,220,0.14), transparent 72%)",
+              "radial-gradient(320px circle at top right, rgba(255,248,220,0.10), transparent 74%)",
           }}
         />
         <div className="absolute inset-x-0 top-0 h-px bg-white/18 pointer-events-none" />
@@ -75,7 +75,7 @@ export function HomeScreen({
             </div>
           </div>
 
-          <div className="mt-4 rounded-[24px] border border-white/18 bg-white/14 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_14px_34px_rgba(0,0,0,0.10)]">
+          <div className="mt-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.10)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/72">
@@ -100,7 +100,7 @@ export function HomeScreen({
             </div>
           </div>
 
-          <div className="mt-3 rounded-[24px] border border-white/14 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(245,158,11,0.06))] p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_10px_28px_rgba(0,0,0,0.08)]">
+          <div className="mt-3 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(245,158,11,0.04))] p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/68">
@@ -119,18 +119,13 @@ export function HomeScreen({
                 </div>
               </div>
 
-              <div className="shrink-0 rounded-[18px] bg-white/10 px-3 py-2 text-right ring-1 ring-white/10">
-                <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/58">
-                  Progres
-                </div>
-                <div className="mt-1 text-[15px] font-extrabold text-white">
-                  {qurbanPct}%
-                </div>
-              </div>
+              <SemiGauge value={qurbanPct} />
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
+          <div className="mt-2 h-px bg-white/8" />
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
             <ActionCard
               title="Lihat Progres Qurban"
               subtitle={
@@ -304,6 +299,57 @@ function QurbanGroupCard({
   );
 }
 
+function SemiGauge({ value, label = "" }: { value: number; label?: string }) {
+  const safeValue = Math.max(0, Math.min(100, Math.round(value || 0)));
+  const angle = (safeValue / 100) * 180;
+
+  let progressColor = "#ef4444"; // merah
+  if (safeValue >= 67) {
+    progressColor = "#22c55e"; // hijau
+  } else if (safeValue >= 34) {
+    progressColor = "#f59e0b"; // orange
+  }
+
+  return (
+    <div className="flex w-[88px] shrink-0 flex-col items-center rounded-[16px] bg-white/6 px-2.5 py-2 ring-0 outline-none">
+      <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/52">
+        {label}
+      </div>
+
+      <div className="relative mt-1.5 h-[42px] w-[78px] overflow-hidden">
+        {/* track */}
+        <div
+          className="absolute left-1/2 top-[4px] h-[64px] w-[64px] -translate-x-1/2 rounded-full border-[5px] border-white/14"
+          style={{
+            clipPath: "inset(0 0 50% 0)",
+            opacity: 0.25,
+          }}
+        />
+
+        {/* progress */}
+        <div
+          className="absolute left-1/2 top-[4px] h-[64px] w-[64px] -translate-x-1/2 rounded-full border-[5px] border-transparent"
+          style={{
+            clipPath: "inset(0 0 50% 0)",
+            borderTopColor: progressColor,
+            borderRightColor: progressColor,
+            transform: `translateX(-50%) rotate(${Math.max(-180, angle - 180)}deg)`,
+            transformOrigin: "50% 50%",
+            filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.10))",
+          }}
+        />
+
+        {/* value */}
+        <div className="absolute inset-x-0 bottom-[1px] flex items-center justify-center">
+          <div className="text-[13px] font-extrabold leading-none text-white/96">
+            {safeValue}%
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ActionCard({
   title,
   subtitle,
@@ -320,18 +366,18 @@ function ActionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative overflow-hidden rounded-[24px] p-4 text-left backdrop-blur-md transition-all duration-200 active:scale-[0.97] ${
+      className={`group relative overflow-hidden rounded-[24px] p-4 text-left transition-all duration-200 active:scale-[0.96] ${
         isQurban
-          ? "border border-white/24 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.10))] shadow-[0_12px_28px_rgba(0,0,0,0.14)] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.12))]"
-          : "border border-white/16 bg-[linear-gradient(180deg,rgba(15,23,42,0.10),rgba(255,255,255,0.05))] shadow-[0_10px_24px_rgba(0,0,0,0.10)] hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.14),rgba(255,255,255,0.07))]"
+          ? "border border-white/28 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.12))] shadow-[0_14px_30px_rgba(0,0,0,0.18)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.10))]"
+          : "border border-white/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(15,23,42,0.06))] shadow-[0_14px_30px_rgba(0,0,0,0.14)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(15,23,42,0.05))]"
       }`}
     >
-      <div className="absolute inset-x-0 top-0 h-px bg-white/14 pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-px bg-white/18 pointer-events-none" />
 
       <div className="flex items-start justify-between">
         <div
-          className={`flex h-10 w-10 items-center justify-center rounded-[14px] ring-1 ring-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] ${
-            isQurban ? "bg-white/20" : "bg-white/12"
+          className={`flex h-10 w-10 items-center justify-center rounded-[14px] ring-0 ring-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] ${
+            isQurban ? "bg-white/24" : "bg-white/16"
           }`}
         >
           <Icon className="h-4 w-4 text-white" />
@@ -341,10 +387,10 @@ function ActionCard({
       </div>
 
       <div className="mt-4">
-        <div className="text-[15px] leading-tight font-bold text-white">
+        <div className="text-[15px] leading-tight font-extrabold text-white">
           {title}
         </div>
-        <div className="mt-1 text-[12px] leading-relaxed text-white/64">
+        <div className="mt-1 text-[12px] leading-relaxed text-white/72">
           {subtitle}
         </div>
       </div>

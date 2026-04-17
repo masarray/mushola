@@ -79,16 +79,16 @@ export function EventScreen({ data, loading }: EventScreenProps) {
 
           <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-muted-foreground">
             {qurbanRemaining > 0
-              ? `Sudah terisi ${qurbanFilled}/${qurbanSlots} slot. Masih tersedia ${Math.max(0, qurbanSlots - qurbanFilled)} slot dan dana qurban masih kurang ${formatCurrency(qurbanRemaining)}.`
+              ? `Sudah terisi ${qurbanFilled}/${qurbanSlots} peserta qurban. Kurang ${Math.max(0, qurbanSlots - qurbanFilled)} peserta lagi. Dana qurban masih kurang ${formatCurrency(qurbanRemaining)}.`
               : `Seluruh slot sudah terpenuhi. Dana qurban terkumpul ${formatCurrency(qurbanCollected)}.`}
           </p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-5 grid grid-cols-[1fr_2fr] gap-3">
             <SummaryCard
               icon={<Users className="h-4 w-4 text-emerald-700" />}
-              label="Slot Terisi"
+              label="Peserta"
               value={`${qurbanFilled}/${qurbanSlots}`}
-              subtext={`${Math.max(0, qurbanSlots - qurbanFilled)} slot lagi tersedia`}
+              subtext={`Yuk! ${Math.max(0, qurbanSlots - qurbanFilled)} orang lagi...`}
             />
             <SummaryCard
               icon={<CircleDollarSign className="h-4 w-4 text-amber-700" />}
