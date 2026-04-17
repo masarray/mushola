@@ -228,6 +228,27 @@ export function HomeScreen({
       </section>
 
       <section className="rounded-[28px] border border-border bg-card p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+        <div className="mb-4 rounded-[22px] border border-emerald-200/70 bg-[linear-gradient(135deg,rgba(236,253,245,0.96),rgba(255,251,235,0.96))] px-4 py-3 shadow-[0_10px_24px_rgba(16,185,129,0.06)]">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
+                Transfer Qurban
+              </div>
+              <div className="mt-1 text-sm font-semibold leading-relaxed text-foreground">
+                Rekening resmi qurban tersedia di halaman Event.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigate?.("event")}
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)] transition hover:gap-1.5"
+            >
+              Lihat rekening
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[18px] bg-primary/10 ring-1 ring-primary/10">
             <Beef className="h-5 w-5 text-primary" />

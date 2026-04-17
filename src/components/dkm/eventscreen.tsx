@@ -7,12 +7,20 @@ import {
   CircleDollarSign,
   Sparkles,
   ArrowRight,
+  Building2,
+  Copy,
+  Phone,
+  BadgeCheck,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useRef } from "react";
 
 interface EventScreenProps {
   data: PublicData | null;
   loading: boolean;
   isRefreshing?: boolean;
+  canOpenGroupsDetail?: boolean;
+  onOpenGroupsDetail?: () => void;
 }
 
 type QurbanGroup = NonNullable<PublicData["qurban"]["groups"]>[number] & {
@@ -66,7 +74,11 @@ export function EventScreen({
   data,
   loading,
   isRefreshing = false,
+  canOpenGroupsDetail = false,
+  onOpenGroupsDetail,
 }: EventScreenProps) {
+  const { toast } = useToast();
+  const groupsSectionRef = useRef<HTMLElement | null>(null);
   const qurban = data?.qurban;
   const groups = qurban?.groups || [];
   const qurbanFilled = safeNumber(qurban?.totalFilled);
@@ -75,6 +87,38 @@ export function EventScreen({
   const qurbanCollected = safeNumber(qurban?.totalNominal);
   const qurbanPct = safeNumber(qurban?.progressPct);
   const isInitialLoading = loading && !data;
+  const qurbanAccountNumber = "7126194832";
+  const qurbanAccountName = "Muhammad Rifqi Syauqi";
+  const qurbanAccountBank = "BSI";
+  const qurbanConfirmPhone = "085646230887";
+
+  const handleOpenGroups = () => {
+    if (canOpenGroupsDetail && onOpenGroupsDetail) {
+      onOpenGroupsDetail();
+      return;
+    }
+
+    groupsSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleCopyAccountNumber = async () => {
+    try {
+      await navigator.clipboard.writeText(qurbanAccountNumber);
+      toast({
+        title: "Nomor rekening berhasil disalin",
+        description: `${qurbanAccountBank} ${qurbanAccountNumber}`,
+      });
+    } catch {
+      toast({
+        title: "Gagal menyalin nomor rekening",
+        description: "Silakan salin manual nomor rekening qurban.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in pb-2">
@@ -146,6 +190,7 @@ export function EventScreen({
 
                 <button
                   type="button"
+                  onClick={handleOpenGroups}
                   className="rounded-full bg-emerald-700 px-4 py-2 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.20)] transition hover:bg-emerald-800 active:scale-[0.98]"
                 >
                   <span className="inline-flex items-center gap-1.5">
@@ -159,7 +204,57 @@ export function EventScreen({
         </div>
       </section>
 
-      <section className="rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+      <section
+        ref={groupsSectionRef}
+        className="rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
+      >
+        <div className="mb-5 rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-5 shadow-[0_14px_32px_rgba(16,185,129,0.08)]">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
+                <BadgeCheck className="h-3.5 w-3.5" />
+                Rekening Resmi Qurban
+              </div>
+              <div className="mt-3 text-[1.4rem] font-black leading-tight tracking-[-0.03em] text-foreground">
+                Transfer Pembayaran Qurban
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Warga yang ingin transfer dapat memakai rekening resmi berikut.
+              </p>
+            </div>
+
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/90 shadow-[0_10px_18px_rgba(16,185,129,0.10)]">
+              <Building2 className="h-5 w-5 text-emerald-700" />
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-[24px] border border-emerald-100 bg-white/90 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+              {qurbanAccountBank} a.n. {qurbanAccountName}
+            </div>
+            <div className="mt-2 text-[1.85rem] font-black leading-none tracking-[0.02em] text-foreground sm:text-[2.2rem]">
+              {qurbanAccountNumber}
+            </div>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleCopyAccountNumber}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.18)] transition hover:bg-emerald-800 active:scale-[0.98]"
+              >
+                <Copy className="h-4 w-4" />
+                Salin Nomor Rekening
+              </button>
+              <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+                <Phone className="h-4 w-4" />
+                Konfirmasi ke {qurbanConfirmPhone} (Pak Rifqi)
+              </div>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              Setelah transfer, mohon konfirmasi ke {qurbanConfirmPhone} agar pembayaran cepat dicatat.
+            </p>
+          </div>
+        </div>
+
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">

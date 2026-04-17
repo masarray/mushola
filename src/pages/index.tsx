@@ -8,6 +8,7 @@ import { RekapScreen } from '@/components/dkm/rekapscreen';
 import { QurbanScreen } from '@/components/dkm/qurbanscreen';
 import { AuditScreen } from '@/components/dkm/auditscreen';
 import { AccountScreen } from '@/components/dkm/accountscreen';
+import { InstallPrompt } from '@/components/dkm/installprompt';
 import { getErrorMessage, loadPublicData, type PublicData } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { RefreshCw } from 'lucide-react';
@@ -248,6 +249,8 @@ const Index = () => {
               data={data}
               loading={loading}
               isRefreshing={isRefreshingFromCache}
+              canOpenGroupsDetail={Boolean(user)}
+              onOpenGroupsDetail={() => navigate('qurban')}
             />
           )}
           {screen === 'login' && (
@@ -262,6 +265,7 @@ const Index = () => {
       </div>
 
       <BottomNav active={screen} onNavigate={navigate} />
+      {!user && <InstallPrompt />}
     </div>
   );
 };
