@@ -127,7 +127,7 @@ export function HomeScreen({
 
           <div className="mt-4 grid grid-cols-2 gap-3">
             <ActionCard
-              title="Lihat Progres Qurban"
+              title="Informasi Qurban"
               subtitle={
                 loading
                   ? "..."
@@ -136,7 +136,7 @@ export function HomeScreen({
               onClick={() => onNavigate?.("event")}
             />
             <ActionCard
-              title="Masuk Panel Pengurus"
+              title="Login Pengurus"
               subtitle="Bendahara & pengurus"
               onClick={() => onNavigate?.("login")}
             />
