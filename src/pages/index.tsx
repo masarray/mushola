@@ -12,7 +12,7 @@ import {
   HomeScreenSkeleton,
   EventScreenSkeleton,
 } from '@/components/dkm/skeletons';
-import { loadPublicData, type PublicData } from '@/lib/api';
+import { getErrorMessage, loadPublicData, type PublicData } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { RefreshCw } from 'lucide-react';
 
@@ -40,8 +40,8 @@ const Index = () => {
     try {
       const result = await loadPublicData();
       setData(result);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
       setRefreshing(false);

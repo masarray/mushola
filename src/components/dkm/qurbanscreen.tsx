@@ -1,6 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
 import { useAuth } from '@/lib/auth';
-import { apiSubmitQurbanPayment } from '@/lib/api';
+import {
+  apiSubmitQurbanPayment,
+  getErrorMessage,
+  QurbanGroup,
+  QurbanPayment,
+  QurbanRow,
+} from '@/lib/api';
 import { formatCurrency, safeNumber } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,7 +85,7 @@ export function QurbanScreen() {
   const qurbanPayments = Array.isArray(internalData?.qurbanPayments) ? internalData.qurbanPayments : [];
 
   const normalizedRows = useMemo(() => {
-    return rows.map((r: any) => {
+    return rows.map((r: QurbanRow) => {
       const target = safeNumber(r.targetBayar);
       const paid = safeNumber(r.totalBayar);
       const remaining = calcRemaining(target, paid, r.sisaBayar);
@@ -99,11 +105,11 @@ export function QurbanScreen() {
 
   const filteredRows = useMemo(() => {
     if (!effectiveSelectedGroup) return normalizedRows;
-    return normalizedRows.filter((r: any) => r.grup === effectiveSelectedGroup);
+    return normalizedRows.filter((r) => r.grup === effectiveSelectedGroup);
   }, [normalizedRows, effectiveSelectedGroup]);
 
   const selected = useMemo(() => {
-    return normalizedRows.find((r: any) => r.shohibulId === selectedShohibulId) || null;
+    return normalizedRows.find((r) => r.shohibulId === selectedShohibulId) || null;
   }, [normalizedRows, selectedShohibulId]);
 
   const quickAmounts = useMemo(() => {
@@ -157,7 +163,10 @@ export function QurbanScreen() {
       if (res.success) {
         toast({
           title: 'Pembayaran berhasil disimpan',
-          description: res.result?.paymentId || 'Data masuk ke riwayat pembayaran.',
+          description:
+            typeof res.result?.paymentId === 'string'
+              ? res.result.paymentId
+              : 'Data masuk ke riwayat pembayaran.',
         });
 
         setNominal('');
@@ -174,9 +183,9 @@ export function QurbanScreen() {
           variant: 'destructive',
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
-        title: err?.message || 'Gagal menyimpan pembayaran',
+        title: getErrorMessage(err),
         variant: 'destructive',
       });
     } finally {
@@ -208,7 +217,7 @@ export function QurbanScreen() {
           {/* Group chips */}
           <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
             <div className="flex gap-2 overflow-x-auto no-scrollbar">
-              {groups.map((g: any) => {
+              {groups.map((g: QurbanGroup) => {
                 const active = effectiveSelectedGroup === g.groupName;
                 return (
                   <button
@@ -231,7 +240,7 @@ export function QurbanScreen() {
           {/* List shohibul */}
           <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
             <div className="space-y-2">
-              {filteredRows.map((r: any) => {
+              {filteredRows.map((r) => {
                 const isLunas = r.statusBayarSmart === 'Lunas';
                 const isDp = r.statusBayarSmart === 'DP';
 
@@ -288,7 +297,7 @@ export function QurbanScreen() {
           {qurbanPayments.length > 0 && view === 'history' && (
             <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
               <div className="space-y-3">
-                {qurbanPayments.map((p: any) => (
+                {qurbanPayments.map((p: QurbanPayment) => (
                   <div
                     key={p.paymentId}
                     className="flex items-start justify-between gap-3 border-b border-border/40 pb-3 last:border-b-0 last:pb-0"

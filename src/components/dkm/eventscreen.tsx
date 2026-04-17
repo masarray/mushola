@@ -14,6 +14,13 @@ interface EventScreenProps {
   loading: boolean;
 }
 
+type QurbanGroup = NonNullable<PublicData["qurban"]["groups"]>[number] & {
+  paymentCollectedNominal?: number;
+  paymentTargetNominal?: number;
+  collectedNominal?: number;
+  targetNominal?: number;
+};
+
 function formatPercent(value: number) {
   return `${Math.max(0, Math.min(100, Math.round(value || 0)))}%`;
 }
@@ -161,7 +168,9 @@ export function EventScreen({ data, loading }: EventScreenProps) {
             </div>
           ) : groups.length === 0 ? (
             <div className="rounded-[24px] border border-border bg-card p-4 text-center shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-              <div className="text-sm font-semibold text-foreground">Belum ada data grup</div>
+              <div className="text-sm font-semibold text-foreground">
+                Belum ada data grup
+              </div>
               <div className="mt-1 text-xs text-muted-foreground">
                 Data qurban akan tampil setelah backend publik terbaca.
               </div>
@@ -173,15 +182,15 @@ export function EventScreen({ data, loading }: EventScreenProps) {
               const paymentPct = safeNumber(group.paymentProgressPct);
 
               const paidAmount =
-                typeof (group as any).paymentCollectedNominal === "number"
-                  ? (group as any).paymentCollectedNominal
+                typeof group.paymentCollectedNominal === "number"
+                  ? group.paymentCollectedNominal
                   : typeof group.collectedNominal === "number"
                     ? group.collectedNominal
                     : 0;
 
               const targetAmount =
-                typeof (group as any).paymentTargetNominal === "number"
-                  ? (group as any).paymentTargetNominal
+                typeof group.paymentTargetNominal === "number"
+                  ? group.paymentTargetNominal
                   : typeof group.targetNominal === "number"
                     ? group.targetNominal
                     : 0;
@@ -199,7 +208,9 @@ export function EventScreen({ data, loading }: EventScreenProps) {
                       : `${formatPercent(paymentPct)} pembayaran`
                   }
                   targetAmountLabel={
-                    targetAmount > 0 ? formatCurrency(targetAmount) : "target grup"
+                    targetAmount > 0
+                      ? formatCurrency(targetAmount)
+                      : "target grup"
                   }
                 />
               );

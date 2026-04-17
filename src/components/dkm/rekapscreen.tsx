@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/lib/auth';
+import { PublicData, Transaction } from '@/lib/api';
 import { formatCurrency, safeNumber } from '@/lib/format';
 import { ProgressBar } from './progressbar';
 import {
@@ -15,10 +16,12 @@ import {
 
 type RekapFilter = 'OPERASIONAL' | 'QURBAN' | 'SEMUA';
 
-function inferBucket(trx: any): RekapFilter {
+type TransactionWithBucket = Transaction & { bucket: RekapFilter; deskripsi?: string };
+
+function inferBucket(trx: Transaction): RekapFilter {
   const event = String(trx?.event || '').toUpperCase();
   const kategori = String(trx?.kategori || '').toUpperCase();
-  const detail = String(trx?.keterangan || trx?.deskripsi || '').toUpperCase();
+  const detail = String(trx?.keterangan || '').toUpperCase();
 
   if (
     event.includes('QURBAN') ||
@@ -36,35 +39,22 @@ export function RekapScreen() {
   const { internalData, internalLoading } = useAuth();
   const [filter, setFilter] = useState<RekapFilter>('OPERASIONAL');
 
-  if (internalLoading && !internalData) {
-    return (
-      <div className="flex items-center justify-center py-20 animate-fade-in">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!internalData) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground animate-fade-in">
-        <AlertCircle className="mb-3 h-10 w-10 opacity-40" />
-        <p className="text-sm">Data internal belum tersedia</p>
-      </div>
-    );
-  }
-
-  const summary = internalData.summary || {};
-  const qurban = internalData.qurban || {};
-  const transactions = Array.isArray(internalData.recentTransactions)
-    ? internalData.recentTransactions
-    : [];
+  const summary: PublicData['summary'] = internalData?.summary ?? {};
+  const qurban: PublicData['qurban'] = internalData?.qurban ?? {};
+  const transactions: Transaction[] = useMemo(
+    () =>
+      Array.isArray(internalData?.recentTransactions)
+        ? internalData.recentTransactions
+        : [],
+    [internalData?.recentTransactions],
+  );
 
   const saldoKas = safeNumber(summary['Saldo Kas']);
   const saldoOperasional = safeNumber(summary['Saldo Operasional']);
   const saldoQurban =
     summary['Saldo Qurban'] !== undefined
       ? safeNumber(summary['Saldo Qurban'])
-      : safeNumber(qurban?.totalNominal);
+      : safeNumber(qurban.totalNominal);
 
   const todayStats = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -72,9 +62,9 @@ export function RekapScreen() {
     let keluar = 0;
 
     for (const trx of transactions) {
-      const tanggal = String(trx?.tanggal || '');
-      const jenis = String(trx?.jenis || '').toUpperCase();
-      const nominal = safeNumber(trx?.nominal);
+      const tanggal = String(trx.tanggal || '');
+      const jenis = String(trx.jenis || '').toUpperCase();
+      const nominal = safeNumber(trx.nominal);
 
       if (!tanggal.startsWith(today)) continue;
 
@@ -85,16 +75,16 @@ export function RekapScreen() {
     return { masuk, keluar };
   }, [transactions]);
 
-  const qurbanRemaining = safeNumber(qurban?.remainingNominal);
-  const qurbanFilled = safeNumber(qurban?.totalFilled);
+  const qurbanRemaining = safeNumber(qurban.remainingNominal);
+  const qurbanFilled = safeNumber(qurban.totalFilled);
   const qurbanSlots =
-    safeNumber(qurban?.totalSlots) || qurbanFilled + safeNumber(qurban?.totalEmpty);
-  const qurbanPct = safeNumber(qurban?.progressPct);
-  const qurbanCollected = safeNumber(qurban?.totalNominal);
-  const qurbanColor = qurban?.progressColor || 'mixed';
+    safeNumber(qurban.totalSlots) || qurbanFilled + safeNumber(qurban.totalEmpty);
+  const qurbanPct = safeNumber(qurban.progressPct);
+  const qurbanCollected = safeNumber(qurban.totalNominal);
+  const qurbanColor = qurban.progressColor || 'mixed';
 
   const filteredTransactions = useMemo(() => {
-    const rows = transactions.map((trx) => ({
+    const rows: TransactionWithBucket[] = transactions.map((trx) => ({
       ...trx,
       bucket: inferBucket(trx),
     }));
@@ -122,6 +112,23 @@ export function RekapScreen() {
     if (saldoOperasional < 1000000) return 'Kas operasional mulai menipis';
     return 'Kas operasional masih aman';
   }, [saldoOperasional]);
+
+  if (internalLoading && !internalData) {
+    return (
+      <div className="flex items-center justify-center py-20 animate-fade-in">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!internalData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground animate-fade-in">
+        <AlertCircle className="mb-3 h-10 w-10 opacity-40" />
+        <p className="text-sm">Data internal belum tersedia</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
@@ -236,21 +243,21 @@ export function RekapScreen() {
           <p className="text-sm text-muted-foreground">Belum ada transaksi pada filter ini</p>
         ) : (
           <div className="space-y-1">
-            {filteredTransactions.map((trx: any, index: number) => {
-              const isIncome = String(trx?.jenis || '').toUpperCase() === 'PEMASUKAN';
-              const nominal = safeNumber(trx?.nominal);
-              const kategori = String(trx?.kategori || 'Transaksi');
-              const metode = String(trx?.metode || '-');
-              const tanggalRaw = trx?.tanggal ? new Date(trx.tanggal) : null;
+            {filteredTransactions.map((trx, index: number) => {
+              const isIncome = String(trx.jenis || '').toUpperCase() === 'PEMASUKAN';
+              const nominal = safeNumber(trx.nominal);
+              const kategori = String(trx.kategori || 'Transaksi');
+              const metode = String(trx.metode || '-');
+              const tanggalRaw = trx.tanggal ? new Date(trx.tanggal) : null;
               const tanggal =
                 tanggalRaw && !Number.isNaN(tanggalRaw.getTime())
                   ? tanggalRaw.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
                   : '-';
-              const detail = String(trx?.keterangan || trx?.deskripsi || '').trim();
+              const detail = String(trx.keterangan || trx.deskripsi || '').trim();
 
               return (
                 <div
-                  key={trx?.id || trx?.trxId || `${kategori}-${index}`}
+                  key={trx.id || `${kategori}-${index}`}
                   className="flex items-start justify-between gap-3 border-b border-border/40 py-3 last:border-0 last:pb-0"
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-2.5">

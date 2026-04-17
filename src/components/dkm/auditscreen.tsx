@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
-import { apiSubmitCorrection } from '@/lib/api';
+import { apiSubmitCorrection, getErrorMessage } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,8 +58,8 @@ export function AuditScreen() {
       } else {
         toast({ title: res.message || 'Gagal menyimpan', variant: 'destructive' });
       }
-    } catch (err: any) {
-      toast({ title: err.message || 'Gagal menyimpan', variant: 'destructive' });
+    } catch (err: unknown) {
+      toast({ title: getErrorMessage(err), variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }

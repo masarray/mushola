@@ -3,41 +3,43 @@ const APPS_SCRIPT_URL =
 
 /* ── Types ── */
 export interface QurbanGroup {
-  groupName: string;
-  filledSlots: number;
-  totalSlots: number;
-  fillPct: number;
-  paymentProgressPct: number;
-  paymentProgressColor: string;
-  status: string;
-  collectedNominal: number;
-  targetNominal: number;
-  remainingNominal: number;
-  lunasCount: number;
-  dpCount: number;
-  belumCount: number;
+  groupName?: string;
+  filledSlots?: number;
+  totalSlots?: number;
+  fillPct?: number;
+  paymentProgressPct?: number;
+  paymentProgressColor?: string;
+  status?: string;
+  collectedNominal?: number;
+  targetNominal?: number;
+  remainingNominal?: number;
+  lunasCount?: number;
+  dpCount?: number;
+  belumCount?: number;
+  paymentCollectedNominal?: number;
+  paymentTargetNominal?: number;
 }
 
 export interface PublicData {
   config?: Record<string, unknown>;
   summary: {
-    'Saldo Kas': number;
-    'Total Pemasukan': number;
-    'Total Pengeluaran': number;
-    'Saldo Operasional': number;
-    'Saldo Ramadhan': number;
+    'Saldo Kas'?: number;
+    'Total Pemasukan'?: number;
+    'Total Pengeluaran'?: number;
+    'Saldo Operasional'?: number;
+    'Saldo Ramadhan'?: number;
     'Saldo Qurban'?: number;
   };
   qurban: {
-    totalNominal: number;
-    progressPct: number;
-    progressColor: string;
-    remainingNominal: number;
-    totalFilled: number;
-    totalSlots: number;
-    totalGroups: number;
-    totalEmpty: number;
-    groups: QurbanGroup[];
+    totalNominal?: number;
+    progressPct?: number;
+    progressColor?: string;
+    remainingNominal?: number;
+    totalFilled?: number;
+    totalSlots?: number;
+    totalGroups?: number;
+    totalEmpty?: number;
+    groups?: QurbanGroup[];
   };
   seasonal: {
     heroEvent: string;
@@ -65,6 +67,18 @@ export interface Transaction {
   status: 'NORMAL' | 'KOREKSI';
   refId?: string;
   correctionReason?: string;
+}
+
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  if (typeof error === 'string' && error.trim()) {
+    return error;
+  }
+
+  return 'Terjadi kesalahan. Coba lagi.';
 }
 
 export interface QurbanRow {

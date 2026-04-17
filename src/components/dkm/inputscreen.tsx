@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '@/lib/auth';
-import { apiSubmitTransaction } from '@/lib/api';
+import { apiSubmitTransaction, getErrorMessage } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -212,7 +212,10 @@ export function InputScreen() {
       if (res.success) {
         toast({
           title: 'Transaksi berhasil disimpan',
-          description: res.result?.transactionId || 'Data masuk ke rekap',
+          description:
+            typeof res.result?.transactionId === 'string'
+              ? res.result.transactionId
+              : 'Data masuk ke rekap',
         });
         resetFormSmart();
         refreshInternal();
@@ -222,9 +225,9 @@ export function InputScreen() {
           variant: 'destructive',
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
-        title: err?.message || 'Gagal menyimpan',
+        title: getErrorMessage(err),
         variant: 'destructive',
       });
     } finally {
