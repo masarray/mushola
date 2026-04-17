@@ -50,7 +50,7 @@ export function HomeScreen({ data, loading, error, onNavigate }: HomeScreenProps
       : 'Warga bisa memantau kondisi kas dan perkembangan dana penting kapan saja.';
 
   return (
-    <div className="flex flex-col gap-4 animate-fade-in">
+    <div className="flex flex-col gap-5 animate-fade-in">
       {/* HERO TRUST */}
 
     <section className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-card">
@@ -109,7 +109,7 @@ export function HomeScreen({ data, loading, error, onNavigate }: HomeScreenProps
 </section>
 
       {/* STORY CARD */}
-      <section className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+      <section className="rounded-[28px] border border-border bg-card p-6 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">

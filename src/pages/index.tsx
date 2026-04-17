@@ -125,7 +125,7 @@ const Index = () => {
         </div>
       )}
 
-      <div className="max-w-[520px] mx-auto px-4 pt-3 pb-28">
+      <div className="max-w-[520px] mx-auto px-4 pt-3 pb-[132px]">
                 {/* Header */}
         {!(screen === 'home' && !user) && (
           <header className="py-2 mb-4">
