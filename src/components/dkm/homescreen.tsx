@@ -155,7 +155,7 @@ export function HomeScreen({
             <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Fokus Qurban
             </div>
-            <h3 className="mt-2 text-[2rem] leading-tight font-black tracking-tight text-foreground">
+            <h3 className="mt-2 text-[1.6rem] leading-tight font-black tracking-tight text-foreground">
               Progres Qurban Warga
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -192,15 +192,15 @@ export function HomeScreen({
       <section className="grid grid-cols-2 gap-3">
         <MiniStat
           icon={<TrendingUp className="h-4 w-4 text-primary" />}
-          label="Dana Tercatat Masuk"
+          label="Kas Masuk"
           value={loading ? "..." : formatCurrency(totalPemasukan)}
-          hint="Rekaman seluruh transaksi masuk"
+          hint="Riwayat transaksi masuk"
         />
         <MiniStat
           icon={<TrendingDown className="h-4 w-4 text-destructive" />}
-          label="Dana Tercatat Keluar"
+          label="Kas Keluar"
           value={loading ? "..." : formatCurrency(totalPengeluaran)}
-          hint="Rekaman seluruh transaksi keluar"
+          hint="Riwayat transaksi keluar"
         />
       </section>
 
@@ -371,7 +371,7 @@ function MiniStat({
           {label}
         </span>
       </div>
-      <div className="mt-3 text-[1.6rem] leading-none font-black tracking-[-0.02em] text-foreground">
+      <div className="mt-3 text-[1.4rem] leading-none font-black tracking-[-0.02em] text-foreground">
         {value}
       </div>
       {hint && (
