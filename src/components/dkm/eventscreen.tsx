@@ -132,11 +132,11 @@ export function EventScreen({
   };
 
   return (
-    <div className="flex flex-col gap-5 animate-fade-in pb-2">
-      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
+    <div className="flex flex-col gap-4 animate-fade-in pb-2">
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,250,248,1))]" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/70" />
-        <div className="relative p-5">
+        <div className="relative p-[clamp(14px,4vw,20px)]">
           {isRefreshing && (
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/85 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)]">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
@@ -149,11 +149,11 @@ export function EventScreen({
             Qurban Tahun Ini
           </div>
 
-          <div className="mt-3 text-[2rem] leading-[1.02] font-black tracking-[-0.03em] text-foreground">
+          <div className="mt-3 text-[clamp(1.55rem,6.8vw,2rem)] leading-[1.02] font-black tracking-[-0.03em] text-foreground">
             Progress Qurban Warga
           </div>
 
-          <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-muted-foreground">
+          <p className="mt-3 max-w-[38ch] text-[clamp(12px,3.5vw,14px)] leading-relaxed text-muted-foreground">
             {isInitialLoading
               ? "Mengambil ringkasan qurban terbaru dari spreadsheet..."
               : qurbanRemaining > 0
@@ -161,7 +161,7 @@ export function EventScreen({
                 : `Seluruh slot sudah terpenuhi. Dana qurban terkumpul ${formatCurrency(qurbanCollected)}.`}
           </p>
 
-          <div className="mt-5 grid grid-cols-[1fr_2fr] gap-3">
+          <div className="mt-5 grid grid-cols-[0.95fr_1.35fr] gap-2.5">
             <SummaryCard
               icon={<Users className="h-4 w-4 text-emerald-700" />}
               label="Peserta"
@@ -180,7 +180,7 @@ export function EventScreen({
             />
           </div>
 
-          <div className="mt-4 rounded-[24px] border border-emerald-100 bg-emerald-50/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+          <div className="mt-4 min-h-[156px] rounded-[24px] border border-emerald-100 bg-emerald-50/75 p-[clamp(14px,4vw,16px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-bold text-emerald-900">
@@ -218,17 +218,17 @@ export function EventScreen({
 
       <section
         ref={groupsSectionRef}
-        className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
+        className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(14px,4vw,20px)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.05),transparent_32%)] pointer-events-none" />
-        <div className="mb-5 rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-5 shadow-[0_14px_32px_rgba(16,185,129,0.08)]">
+        <div className="mb-5 rounded-[26px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-[clamp(14px,4vw,20px)] shadow-[0_14px_32px_rgba(16,185,129,0.08)]">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
                 <BadgeCheck className="h-3.5 w-3.5" />
                 Rekening Resmi Qurban
               </div>
-              <div className="mt-3 text-[1.4rem] font-black leading-tight tracking-[-0.03em] text-foreground">
+              <div className="mt-3 text-[clamp(1.2rem,5vw,1.4rem)] font-black leading-tight tracking-[-0.03em] text-foreground">
                 Transfer Pembayaran Qurban
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -245,10 +245,10 @@ export function EventScreen({
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
               {qurbanAccountBank} a.n. {qurbanAccountName}
             </div>
-            <div className="mt-2 text-[1.85rem] font-black leading-none tracking-[0.02em] text-foreground sm:text-[2.2rem]">
+            <div className="mobile-money mt-2 text-[clamp(1.45rem,7vw,2.2rem)] font-black leading-none tracking-[0.01em] text-foreground">
               {qurbanAccountNumber}
             </div>
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
               <button
                 type="button"
                 onClick={handleCopyAccountNumber}
@@ -279,7 +279,7 @@ export function EventScreen({
             <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
               Grup Qurban
             </div>
-            <div className="mt-2 text-[1.55rem] leading-tight font-black tracking-[-0.03em] text-foreground">
+            <div className="mt-2 text-[clamp(1.25rem,5.2vw,1.55rem)] leading-tight font-black tracking-[-0.03em] text-foreground">
               Pilihan Grup Saat Ini
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -365,7 +365,7 @@ function SummaryCard({
   subtext?: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-border bg-white/90 p-4 shadow-[0_10px_28px_rgba(15,23,42,0.05)] backdrop-blur-sm">
+    <div className="min-h-[128px] rounded-[22px] border border-border bg-white/90 p-[clamp(12px,3.4vw,16px)] shadow-[0_10px_28px_rgba(15,23,42,0.05)] backdrop-blur-sm">
       <div className="flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/70">
           {icon}
@@ -375,7 +375,7 @@ function SummaryCard({
         </div>
       </div>
       {value ? (
-        <div className="mt-3 text-[1.35rem] leading-tight font-black tracking-[-0.03em] text-foreground sm:text-[1.75rem]">
+        <div className="mobile-money mt-3 text-[clamp(1rem,4.4vw,1.75rem)] leading-tight font-black tracking-[-0.03em] text-foreground">
           {value}
         </div>
       ) : (
@@ -429,7 +429,7 @@ function GroupCard({
   const paymentColor = getProgressColor(paymentProgressPct);
 
   return (
-    <div className="rounded-[24px] border border-border bg-card p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+    <div className="min-h-[160px] rounded-[24px] border border-border bg-card p-[clamp(12px,3.5vw,16px)] shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-[1rem] font-bold tracking-tight text-foreground">

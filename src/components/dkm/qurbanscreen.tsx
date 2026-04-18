@@ -178,7 +178,7 @@ function GroupMetric({
   helper: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-border/80 bg-white/80 p-4 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
+    <div className="rounded-[22px] border border-border/80 bg-white/80 p-[clamp(0.85rem,3vw,1rem)] shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
       <div className="flex items-center gap-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/8 text-primary">
           {icon}
@@ -187,7 +187,7 @@ function GroupMetric({
           {label}
         </div>
       </div>
-      <div className="mt-3 text-[1.35rem] font-black leading-none tracking-[-0.03em] text-foreground">
+      <div className="mobile-money mt-3 text-[clamp(1.05rem,4.4vw,1.35rem)] font-black leading-[0.98] tracking-[-0.03em] text-foreground">
         {value}
       </div>
       <div className="mt-2 text-xs leading-relaxed text-muted-foreground">
@@ -415,10 +415,10 @@ export function QurbanScreen() {
     <div className="space-y-4 animate-fade-in">
       {!selected ? (
         <>
-          <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(29,91,61,0.11),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,248,244,0.98))]" />
             <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
-            <div className="relative p-5">
+            <div className="relative p-[clamp(1rem,4vw,1.25rem)]">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
                 <BadgeCheck className="h-3.5 w-3.5" />
                 Workspace Qurban
@@ -426,7 +426,7 @@ export function QurbanScreen() {
 
               <div className="mt-3 flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-[1.8rem] font-black leading-[1.05] tracking-[-0.03em] text-foreground">
+                  <h2 className="text-[clamp(1.45rem,6vw,1.8rem)] font-black leading-[1.04] tracking-[-0.03em] text-foreground">
                     Pantau Shohibul dan Pembayaran
                   </h2>
                   <p className="mt-3 max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
@@ -464,7 +464,7 @@ export function QurbanScreen() {
             </div>
           </section>
 
-          <section className="sticky top-3 z-10 overflow-hidden rounded-[30px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-4 shadow-[0_16px_34px_rgba(16,185,129,0.10)] backdrop-blur">
+          <section className="sticky top-3 z-10 overflow-hidden rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_16px_34px_rgba(16,185,129,0.10)] backdrop-blur">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_24%)] pointer-events-none" />
             <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
             <div className="relative">
@@ -473,10 +473,10 @@ export function QurbanScreen() {
                 <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
                   Transfer Qurban
                 </div>
-                <div className="mt-1 text-base font-black leading-tight text-foreground">
+                <div className="text-[clamp(0.95rem,4vw,1rem)] mt-1 font-black leading-tight text-foreground">
                   {QURBAN_ACCOUNT.bank} a.n. {QURBAN_ACCOUNT.name}
                 </div>
-                <div className="mt-1 text-xl font-black tracking-[0.04em] text-foreground">
+                <div className="mobile-money mt-1 text-[clamp(1rem,4.6vw,1.25rem)] font-black tracking-[0.03em] text-foreground">
                   {QURBAN_ACCOUNT.number}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold text-muted-foreground">
@@ -497,7 +497,7 @@ export function QurbanScreen() {
             </div>
           </section>
 
-          <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.05),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.96))] pointer-events-none" />
             <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
             <div className="relative">
@@ -506,7 +506,7 @@ export function QurbanScreen() {
                 <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                   Grup Aktif
                 </div>
-                <div className="mt-1 text-lg font-black tracking-tight text-foreground">
+                <div className="text-[clamp(1rem,4.2vw,1.125rem)] mt-1 font-black tracking-tight text-foreground">
                   {effectiveSelectedGroup || "Semua Grup"}
                 </div>
               </div>
@@ -628,7 +628,7 @@ export function QurbanScreen() {
           </section>
 
           {view === "history" ? (
-            <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+            <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_28%)] pointer-events-none" />
               <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
               <div className="relative">
@@ -666,7 +666,7 @@ export function QurbanScreen() {
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <div className="text-sm font-black text-primary">
+                        <div className="mobile-money text-[clamp(0.92rem,3.9vw,1rem)] font-black text-primary">
                           +{formatCurrency(safeNumber(payment.nominalBayar))}
                         </div>
                         <div className="text-[11px] text-muted-foreground">
@@ -680,7 +680,7 @@ export function QurbanScreen() {
               </div>
             </section>
           ) : (
-            <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+            <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.05),transparent_28%)] pointer-events-none" />
               <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
               <div className="relative">
@@ -699,7 +699,7 @@ export function QurbanScreen() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <div className="text-[1.05rem] font-black leading-tight text-foreground">
+                        <div className="text-[clamp(0.98rem,4.2vw,1.05rem)] font-black leading-tight text-foreground">
                           {row.nama}
                         </div>
 
@@ -711,7 +711,7 @@ export function QurbanScreen() {
                           >
                             {row.statusBayarSmart}
                           </span>
-                          <span className="text-sm font-bold text-destructive">
+                          <span className="mobile-money text-[clamp(0.8rem,3.5vw,0.9rem)] font-bold text-destructive">
                             Kurang {formatCurrency(row.sisaBayarSmart)}
                           </span>
                         </div>
@@ -737,13 +737,13 @@ export function QurbanScreen() {
                           />
                         </div>
 
-                        <div className="mt-2 text-[11px] text-muted-foreground">
+                        <div className="mobile-money mt-2 text-[11px] text-muted-foreground">
                           Target {formatCurrency(row.targetBayarSmart)}
                         </div>
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <div className="text-lg font-black leading-none text-foreground">
+                        <div className="mobile-money text-[clamp(0.98rem,4.4vw,1.125rem)] font-black leading-[0.96] text-foreground">
                           {formatCurrency(row.sisaBayarSmart)}
                         </div>
                         <div className="mt-1 text-[11px] text-muted-foreground">
@@ -769,12 +769,12 @@ export function QurbanScreen() {
             Kembali ke daftar shohibul
           </button>
 
-          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-5 shadow-card">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.07),transparent_26%)] pointer-events-none" />
             <div className="relative space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-xl font-black tracking-tight text-foreground">
+                  <div className="text-[clamp(1.05rem,4.8vw,1.25rem)] font-black tracking-tight text-foreground">
                     {selected.nama}
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -801,7 +801,7 @@ export function QurbanScreen() {
                   <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
                     Target
                   </div>
-                  <div className="mt-1 text-sm font-bold text-foreground">
+                  <div className="mobile-money mt-1 text-[clamp(0.78rem,3.2vw,0.9rem)] font-bold text-foreground">
                     {formatCurrency(selected.targetBayarSmart)}
                   </div>
                 </div>
@@ -810,7 +810,7 @@ export function QurbanScreen() {
                   <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
                     Sudah
                   </div>
-                  <div className="mt-1 text-sm font-bold text-primary">
+                  <div className="mobile-money mt-1 text-[clamp(0.78rem,3.2vw,0.9rem)] font-bold text-primary">
                     {formatCurrency(selected.totalBayarSmart)}
                   </div>
                 </div>
@@ -819,7 +819,7 @@ export function QurbanScreen() {
                   <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
                     Kurang
                   </div>
-                  <div className="mt-1 text-sm font-bold text-destructive">
+                  <div className="mobile-money mt-1 text-[clamp(0.78rem,3.2vw,0.9rem)] font-bold text-destructive">
                     {formatCurrency(selected.sisaBayarSmart)}
                   </div>
                 </div>
@@ -828,7 +828,7 @@ export function QurbanScreen() {
           </section>
 
           {selected.sisaBayarSmart > 0 && quickAmounts.length > 0 && (
-            <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
+            <section className="rounded-[28px] border border-border bg-card p-[clamp(0.9rem,3.5vw,1rem)] shadow-card">
               <div className="flex gap-2 overflow-x-auto no-scrollbar">
                 {quickAmounts.map((amount) => {
                   const isPas = amount === selected.sisaBayarSmart;
@@ -855,7 +855,7 @@ export function QurbanScreen() {
             </section>
           )}
 
-          <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)] space-y-4">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)] space-y-4">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.05),transparent_28%)] pointer-events-none" />
             <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
             <div className="relative space-y-4">
@@ -870,7 +870,7 @@ export function QurbanScreen() {
                 value={nominal}
                 onChange={(e) => setNominal(onlyDigits(e.target.value))}
                 placeholder="0"
-                className="h-16 border-0 bg-transparent px-1 text-4xl font-black tracking-tight text-foreground shadow-none focus-visible:ring-0"
+                className="mobile-money h-16 border-0 bg-transparent px-1 text-[clamp(2rem,8vw,2.25rem)] font-black tracking-tight text-foreground shadow-none focus-visible:ring-0"
               />
               <div className="mt-1 px-1 text-sm font-semibold text-muted-foreground">
                 {Number(nominal || "0") > 0
@@ -902,10 +902,10 @@ export function QurbanScreen() {
                   <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
                     Rekening Transfer
                   </div>
-                  <div className="mt-1 text-sm font-black text-foreground">
+                  <div className="mt-1 text-[clamp(0.88rem,3.7vw,0.95rem)] font-black text-foreground">
                     {QURBAN_ACCOUNT.bank} a.n. {QURBAN_ACCOUNT.name}
                   </div>
-                  <div className="mt-1 text-lg font-black tracking-[0.04em] text-foreground">
+                  <div className="mobile-money mt-1 text-[clamp(0.98rem,4.2vw,1.125rem)] font-black tracking-[0.03em] text-foreground">
                     {QURBAN_ACCOUNT.number}
                   </div>
                   <div className="mt-2 text-xs text-muted-foreground">

@@ -202,7 +202,7 @@ export function AuditScreen() {
       </div>
 
       {tab === 'revisions' && (
-        <section className="rounded-3xl border border-border bg-card p-5 shadow-card">
+        <section className="rounded-3xl border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
           <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold text-foreground">
             <FileWarning className="h-4 w-4 text-amber-500" />
             Workspace Revisi Transaksi
@@ -244,7 +244,7 @@ export function AuditScreen() {
       )}
 
       {tab === 'logs' && (
-        <section className="rounded-3xl border border-border bg-card p-5 shadow-card">
+        <section className="rounded-3xl border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
           <h3 className="mb-4 flex items-center gap-2 font-heading text-sm font-bold text-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" />
             Audit Log

@@ -132,7 +132,7 @@ export function RekapScreen() {
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
-      <section className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+      <section className="rounded-[28px] border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -142,7 +142,7 @@ export function RekapScreen() {
               </span>
             </div>
 
-            <div className="mt-2 text-4xl font-black tracking-tight text-foreground">
+            <div className="mobile-money mt-2 text-[clamp(1.85rem,8vw,2.5rem)] font-black leading-[0.94] tracking-[-0.04em] text-foreground">
               {formatCurrency(saldoOperasional)}
             </div>
 
@@ -181,7 +181,7 @@ export function RekapScreen() {
         />
       </section>
 
-      <section className="rounded-[28px] border border-amber-200/70 bg-amber-50 p-4 shadow-card">
+      <section className="rounded-[28px] border border-amber-200/70 bg-amber-50 p-[clamp(0.95rem,3.6vw,1rem)] shadow-card">
         <div className="flex items-start gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
             <Beef className="h-4 w-4 text-amber-700" />
@@ -210,7 +210,7 @@ export function RekapScreen() {
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+      <section className="rounded-[28px] border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Clock3 className="h-4 w-4 text-muted-foreground" />
@@ -298,7 +298,7 @@ export function RekapScreen() {
                   </div>
 
                   <div
-                    className={`shrink-0 text-sm font-bold ${
+                    className={`mobile-money shrink-0 text-[clamp(0.82rem,3.5vw,0.9rem)] font-bold ${
                       isIncome ? 'text-primary' : 'text-destructive'
                     }`}
                   >
@@ -332,7 +332,7 @@ function SummaryCard({
 }) {
   return (
     <div
-      className={`rounded-[24px] border p-4 shadow-card ${
+      className={`rounded-[24px] border p-[clamp(0.9rem,3.4vw,1rem)] shadow-card ${
         tone === 'warm'
           ? 'border-amber-200/60 bg-amber-50'
           : 'border-border bg-card'
@@ -352,10 +352,10 @@ function SummaryCard({
       </div>
 
       <div
-        className={`mt-3 tracking-tight ${
+        className={`mobile-money mt-3 leading-[0.96] tracking-[-0.03em] ${
           emphasis === 'primary'
-            ? 'text-2xl font-black text-foreground'
-            : 'text-lg font-semibold text-foreground/74'
+            ? 'text-[clamp(1.15rem,5vw,1.5rem)] font-black text-foreground'
+            : 'text-[clamp(0.95rem,4vw,1.125rem)] font-semibold text-foreground/74'
         }`}
       >
         {value}

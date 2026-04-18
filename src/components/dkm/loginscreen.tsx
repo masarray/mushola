@@ -49,18 +49,18 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
-      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(16px,4.5vw,24px)] shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.06),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
         <div className="relative">
-        <div className="mb-6">
+        <div className="mb-5">
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[18px] border border-primary/10 bg-dkm-green-soft/80 shadow-[0_10px_24px_rgba(22,101,52,0.08)]">
             <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
-          <h3 className="font-heading text-xl font-bold text-foreground">
+          <h3 className="font-heading text-[clamp(1.1rem,5vw,1.25rem)] font-bold text-foreground">
             Masuk ke Panel Internal
           </h3>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-2 text-[clamp(12px,3.4vw,14px)] text-muted-foreground leading-relaxed">
             Panel ini dipakai bendahara dan pengurus untuk tugas internal. Warga cukup memakai halaman publik.
           </p>
         </div>
@@ -76,7 +76,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             placeholder="nama@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 rounded-2xl border-border bg-white/80 pl-11 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
+            className="h-[clamp(46px,12vw,48px)] rounded-2xl border-border bg-white/80 pl-11 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
             onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             disabled={loading}
           />
@@ -96,13 +96,13 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             placeholder="Masukkan PIN"
             value={pin}
             onChange={(e) => handlePinChange(e.target.value)}
-            className="h-12 rounded-2xl border-border bg-white/80 pl-11 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
+            className="h-[clamp(46px,12vw,48px)] rounded-2xl border-border bg-white/80 pl-11 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
             onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             disabled={loading}
           />
         </div>
 
-        <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
+        <p className="mt-4 text-[clamp(11px,3vw,12px)] text-muted-foreground leading-relaxed">
           Login diproses lewat backend Apps Script dengan email dan PIN dari sheet USERS. Auto-login email-only lama dimatikan agar tidak gagal diam-diam.
         </p>
 

@@ -10,14 +10,14 @@ export function AccountScreen() {
   return (
     <div className="flex flex-col gap-4 animate-fade-in">
       {/* Profile Card */}
-      <section className="bg-card rounded-3xl border border-border p-6 shadow-card">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-dkm-green-strong flex items-center justify-center">
-            <User className="w-7 h-7 text-primary-foreground" />
+      <section className="rounded-3xl border border-border bg-card p-[clamp(1rem,4vw,1.5rem)] shadow-card">
+        <div className="mb-6 flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-dkm-green-strong">
+            <User className="h-7 w-7 text-primary-foreground" />
           </div>
           <div>
-            <h3 className="font-heading text-lg font-bold text-foreground">{user.name}</h3>
-            <span className="inline-block mt-1 px-3 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary">
+            <h3 className="font-heading text-[clamp(1rem,4.4vw,1.125rem)] font-bold text-foreground">{user.name}</h3>
+            <span className="mt-1 inline-block rounded-full bg-primary/10 px-3 py-0.5 text-[11px] font-bold text-primary">
               {user.role}
             </span>
           </div>
@@ -25,14 +25,14 @@ export function AccountScreen() {
 
         <div className="space-y-3">
           <div className="flex items-center gap-3 py-2">
-            <Mail className="w-4 h-4 text-muted-foreground" />
+            <Mail className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Email</p>
-              <p className="text-sm font-medium text-foreground">{user.email}</p>
+              <p className="text-[clamp(0.85rem,3.5vw,0.95rem)] font-medium text-foreground break-all">{user.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 py-2">
-            <Shield className="w-4 h-4 text-muted-foreground" />
+            <Shield className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Role</p>
               <p className="text-sm font-medium text-foreground">{user.role}</p>
@@ -42,8 +42,8 @@ export function AccountScreen() {
       </section>
 
       {/* Permissions */}
-      <section className="bg-card rounded-3xl border border-border p-5 shadow-card">
-        <h4 className="text-sm font-bold text-foreground mb-3">Akses Panel</h4>
+      <section className="rounded-3xl border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
+        <h4 className="mb-3 text-sm font-bold text-foreground">Akses Panel</h4>
         <div className="space-y-2 text-xs text-muted-foreground">
           {user.role === 'BENDAHARA' ? (
             <>
@@ -69,9 +69,9 @@ export function AccountScreen() {
       <Button
         onClick={logout}
         variant="outline"
-        className="w-full h-12 rounded-2xl border-destructive/30 text-destructive hover:bg-destructive/10 font-bold"
+        className="h-12 w-full rounded-2xl border-destructive/30 font-bold text-destructive hover:bg-destructive/10"
       >
-        <LogOut className="w-4 h-4 mr-2" />
+        <LogOut className="mr-2 h-4 w-4" />
         Logout
       </Button>
     </div>

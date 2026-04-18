@@ -140,13 +140,13 @@ export function InputScreen() {
   if (!isBendahara) {
     return (
       <div className="space-y-4 animate-fade-in">
-        <div className="relative overflow-hidden rounded-[28px] border border-border bg-card p-5 shadow-card">
+        <div className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(1rem,4vw,1.25rem)] shadow-card">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
           <div className="relative">
           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             Akses Dibatasi
           </div>
-          <h3 className="mt-2 text-xl font-black tracking-tight text-foreground">
+          <h3 className="mt-2 text-[clamp(1.05rem,4.8vw,1.25rem)] font-black tracking-tight text-foreground">
             Form input hanya untuk bendahara
           </h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -277,14 +277,14 @@ export function InputScreen() {
     <div className="space-y-4 pb-4">
       <div className="relative overflow-hidden rounded-[28px] border bg-card/90 backdrop-blur-sm shadow-soft">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,246,241,0.95))]" />
-        <div className="relative p-4 sm:p-5 space-y-4">
+        <div className="relative space-y-4 p-[clamp(1rem,4vw,1.25rem)]">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
                 <Zap className="h-3.5 w-3.5" />
                 Mode Cepat
               </div>
-              <h3 className="mt-3 text-xl font-black tracking-tight text-foreground">
+              <h3 className="mt-3 text-[clamp(1.1rem,4.8vw,1.25rem)] font-black tracking-tight text-foreground">
                 Input Transaksi
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -365,7 +365,7 @@ export function InputScreen() {
 
       <div className="relative overflow-hidden rounded-[28px] border bg-card shadow-soft">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.06),transparent_28%)] pointer-events-none" />
-        <div className="relative p-4 sm:p-5 space-y-5">
+        <div className="relative space-y-5 p-[clamp(1rem,4vw,1.25rem)]">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
@@ -392,7 +392,7 @@ export function InputScreen() {
                 value={nominal}
                 onChange={(e) => setNominal(sanitizeNumericInput(e.target.value))}
                 placeholder="0"
-                className="h-14 border-0 bg-transparent px-1 text-3xl font-black tracking-tight shadow-none focus-visible:ring-0"
+                className="mobile-money h-14 border-0 bg-transparent px-1 text-[clamp(1.85rem,8vw,2.2rem)] font-black tracking-tight shadow-none focus-visible:ring-0"
               />
               <div className="mt-2 px-1 text-sm font-semibold text-muted-foreground min-h-[20px]">
                 {nominalValue > 0 ? formatCurrency(nominalValue) : 'Masukkan nominal transaksi'}

@@ -26,7 +26,8 @@ type PublicCachePayload = {
 const Index = () => {
   const { user } = useAuth();
   const isBendahara = user?.role === "BENDAHARA";
-  const [publicQurbanDefaultGroup, setPublicQurbanDefaultGroup] = useState<string>("");
+  const [publicQurbanDefaultGroup, setPublicQurbanDefaultGroup] =
+    useState<string>("");
   const [screen, setScreen] = useState<Screen>("home");
   const [data, setData] = useState<PublicData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,24 +124,27 @@ const Index = () => {
     });
   }, [user]);
 
-  const navigate = useCallback((s: Screen, options?: { defaultGroup?: string }) => {
-    if (s === "input" && user?.role !== "BENDAHARA") {
-      setScreen("rekap");
+  const navigate = useCallback(
+    (s: Screen, options?: { defaultGroup?: string }) => {
+      if (s === "input" && user?.role !== "BENDAHARA") {
+        setScreen("rekap");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      if (s === "qurban") {
+        const fallbackLastGroup =
+          Array.isArray(data?.qurban?.groups) && data.qurban.groups.length > 0
+            ? data.qurban.groups[data.qurban.groups.length - 1]?.groupName || ""
+            : "";
+        setPublicQurbanDefaultGroup(options?.defaultGroup || fallbackLastGroup);
+      }
+
+      setScreen(s);
       window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    if (s === "qurban") {
-      const fallbackLastGroup =
-        Array.isArray(data?.qurban?.groups) && data.qurban.groups.length > 0
-          ? data.qurban.groups[data.qurban.groups.length - 1]?.groupName || ""
-          : "";
-      setPublicQurbanDefaultGroup(options?.defaultGroup || fallbackLastGroup);
-    }
-
-    setScreen(s);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [user, data?.qurban?.groups]);
+    },
+    [user, data?.qurban?.groups],
+  );
 
   useEffect(() => {
     if (screen === "input" && user?.role !== "BENDAHARA") {
@@ -237,34 +241,54 @@ const Index = () => {
 
       <div className="mx-auto max-w-[430px] px-3.5 pt-3 pb-[128px] sm:px-4">
         {!(screen === "home" && !user) && (
-          <header className="mb-4 py-2">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  {user
-                    ? `Panel ${user.role}`
-                    : "Transparansi Keuangan Mushola"}
-                </div>
-                <h1 className="mt-1.5 font-heading text-[24px] leading-[1.1] font-bold tracking-tight text-foreground">
-                  {screenTitles[screen]}
-                </h1>
-                {user && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {user.name} - {user.role}
-                  </p>
-                )}
-                {!user && (
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    Mushola Raudhatul Mukminin
-                  </p>
-                )}
-              </div>
-
-              <img
-                src={APP_ICON_URL}
-                alt="Icon Mushola"
-                className="mt-1 h-10 w-10 shrink-0 object-contain"
+          <header className="mb-3">
+            <div className="relative overflow-hidden rounded-[26px] border border-[#d8cfbb] bg-card shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(18,39,34,0.98) 0%, rgba(21,79,51,0.96) 68%, rgba(34,101,67,0.94) 100%)",
+                }}
               />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent 0%, transparent 74%, rgba(255,246,214,0.06) 100%)",
+                }}
+              />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/10" />
+
+              <div className="relative flex items-start justify-between gap-4 p-[clamp(14px,4vw,18px)] text-white">
+                <div className="min-w-0">
+                  <div className="text-[8px] font-extrabold uppercase tracking-[0.15em] text-white/58">
+                    {user
+                      ? `Panel ${user.role}`
+                      : "Transparansi Keuangan Mushola"}
+                  </div>
+                  <h1 className="mt-0.5 font-heading text-[clamp(1.18rem,4vw,1.42rem)] leading-[1.05] font-bold tracking-tight text-white">
+                    {screenTitles[screen]}
+                  </h1>
+                  {user && (
+                    <p className="mt-1 text-[10px] text-white/66">
+                      {user.name} - {user.role}
+                    </p>
+                  )}
+                  {!user && (
+                    <p className="mt-1 text-[clamp(10px,2.8vw,11px)] leading-relaxed text-white/66">
+                      Mushola Raudhatul Mukminin
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center">
+                  <img
+                    src={APP_ICON_URL}
+                    alt="Icon Mushola"
+                    className="h-9 w-9 object-contain opacity-95 [filter:drop-shadow(0_1px_0_rgba(255,235,190,0.12))]"
+                  />
+                </div>
+              </div>
             </div>
           </header>
         )}

@@ -237,8 +237,8 @@ export function PublicQurbanScreen({
   const initialShellLoading = loading && !data;
 
   return (
-    <div className="flex flex-col gap-5 animate-fade-in pb-2">
-      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+    <div className="flex flex-col gap-4 animate-fade-in pb-2">
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(14px,4vw,20px)] shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.08),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
         <div className="relative">
@@ -248,10 +248,10 @@ export function PublicQurbanScreen({
               <Sparkles className="h-3.5 w-3.5" />
               Daftar Warga Qurban
             </div>
-            <h2 className="mt-3 text-[1.75rem] font-black leading-[1.06] tracking-[-0.03em] text-foreground">
+            <h2 className="mt-3 text-[clamp(1.45rem,6vw,1.75rem)] font-black leading-[1.06] tracking-[-0.03em] text-foreground">
               Cek grup patungan qurban
             </h2>
-            <p className="mt-3 max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 max-w-[40ch] text-[clamp(12px,3.4vw,14px)] leading-relaxed text-muted-foreground">
               Warga bisa melihat masuk di grup sapi yang mana, dengan status yang
               tetap informatif dan nyaman dilihat bersama.
             </p>
@@ -295,7 +295,7 @@ export function PublicQurbanScreen({
               })}
         </div>
 
-        <div className="mt-5 rounded-[22px] border border-border bg-background/90 p-4">
+        <div className="mt-5 min-h-[126px] rounded-[22px] border border-border bg-background/90 p-[clamp(12px,3.5vw,16px)]">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -322,7 +322,7 @@ export function PublicQurbanScreen({
         </div>
       </section>
 
-      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(14px,4vw,20px)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.05),transparent_30%)] pointer-events-none" />
         <div className="relative">
         <div className="mb-4 flex items-center gap-3">
@@ -333,7 +333,7 @@ export function PublicQurbanScreen({
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
               Shohibul
             </div>
-            <div className="text-[1.1rem] font-black tracking-tight text-foreground">
+            <div className="text-[clamp(1rem,4.3vw,1.1rem)] font-black tracking-tight text-foreground">
               Daftar warga pada {activeGroup || "grup qurban"}
             </div>
             <div className="mt-1 text-[12px] text-muted-foreground">
@@ -362,7 +362,7 @@ export function PublicQurbanScreen({
           {visibleCards.map((card, idx) => (
             <article
               key={`${card.grup}-${card.nama}-${idx}`}
-              className="rounded-[22px] border border-border bg-white/90 p-4 shadow-[0_2px_8px_rgba(15,23,42,0.05)]"
+              className="min-h-[134px] rounded-[22px] border border-border bg-white/90 p-[clamp(12px,3.5vw,16px)] shadow-[0_2px_8px_rgba(15,23,42,0.05)]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -371,7 +371,7 @@ export function PublicQurbanScreen({
                   </div>
 
                   <div className="min-w-0">
-                    <div className="line-clamp-2 text-[1rem] font-black leading-tight text-foreground">
+                    <div className="line-clamp-2 text-[clamp(0.95rem,4vw,1rem)] font-black leading-tight text-foreground">
                       {card.nama}
                     </div>
 
