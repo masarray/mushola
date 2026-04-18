@@ -65,7 +65,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
 
   return (
     <nav
-      className="fixed bottom-4 left-1/2 z-20 flex w-[min(520px,calc(100vw-32px))] -translate-x-1/2 items-center justify-around gap-1 rounded-full border border-border/90 bg-card/94 p-2 shadow-[0_12px_28px_rgba(15,23,42,0.10),0_1px_0_rgba(255,255,255,0.72)_inset] backdrop-blur-xl"
+      className="fixed bottom-3 left-1/2 z-20 flex w-[min(430px,calc(100vw-20px))] -translate-x-1/2 items-center justify-around gap-0.5 rounded-full border border-border/90 bg-card/94 px-1.5 py-2 shadow-[0_12px_28px_rgba(15,23,42,0.10),0_1px_0_rgba(255,255,255,0.72)_inset] backdrop-blur-xl"
       aria-label="Navigasi utama"
     >
       {items.map((item) => {
@@ -77,6 +77,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
             onClick={() => onNavigate(item.screen)}
             className={cn(
               "group relative flex min-w-[64px] flex-1 items-center justify-center px-1 py-1 transition-all duration-200 active:scale-[0.94]",
+              "group relative flex min-w-0 flex-1 items-center justify-center px-0.5 py-1 transition-all duration-200 active:scale-[0.94]",
               isActive
                 ? "text-primary"
                 : "text-muted-foreground hover:text-foreground",
@@ -86,6 +87,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
             <div
               className={cn(
                 "flex h-[58px] w-[58px] flex-col items-center justify-center rounded-full transition-all duration-200",
+                "flex h-[clamp(50px,14vw,58px)] w-[clamp(50px,14vw,58px)] flex-col items-center justify-center rounded-full transition-all duration-200",
                 isActive
                   ? "bg-dkm-green-soft shadow-[0_10px_24px_rgba(22,101,52,0.18),0_2px_0_rgba(255,255,255,0.68)_inset]"
                   : "bg-transparent group-hover:bg-muted/45 active:bg-muted/70 active:shadow-[0_6px_16px_rgba(15,23,42,0.10)_inset]",
@@ -93,7 +95,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
             >
               <Icon
                 className={cn(
-                  "h-[21px] w-[21px] transition-all duration-200",
+                  "h-[clamp(18px,5vw,21px)] w-[clamp(18px,5vw,21px)] transition-all duration-200",
                   isActive
                     ? "scale-110 text-primary"
                     : "text-muted-foreground group-hover:scale-105 group-hover:text-foreground",
@@ -102,7 +104,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
               />
               <span
                 className={cn(
-                  "mt-0.5 text-[10px] font-semibold leading-none transition-colors duration-200",
+                  "mt-0.5 text-[clamp(9px,2.4vw,10px)] font-semibold leading-none transition-colors duration-200",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground group-hover:text-foreground",

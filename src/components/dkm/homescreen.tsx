@@ -70,7 +70,7 @@ export function HomeScreen({
         />
         <div className="absolute inset-x-0 top-0 h-px bg-white/18 pointer-events-none" />
 
-        <div className="relative z-10 p-4 text-white sm:p-5">
+        <div className="relative z-10 p-[clamp(14px,4vw,20px)] text-white">
           {isRefreshing && (
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/78">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
@@ -80,10 +80,10 @@ export function HomeScreen({
 
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <div className="text-[15px] font-bold tracking-tight text-white/96">
+              <div className="text-[clamp(14px,4vw,15px)] font-bold tracking-tight text-white/96">
                 Mushola Raudhatul Mukminin
               </div>
-              <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">
+              <div className="mt-1 text-[clamp(9px,2.5vw,11px)] font-semibold uppercase tracking-[0.14em] text-white/60">
                 Transparansi Keuangan Mushola
               </div>
             </div>
@@ -95,14 +95,14 @@ export function HomeScreen({
             />
           </div>
 
-          <div className="mt-4 rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.10)]">
+          <div className="mt-4 min-h-[148px] rounded-[24px] border border-white/10 bg-white/10 p-[clamp(14px,4vw,16px)] backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.10)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/72">
                   <Wallet className="h-4 w-4 text-emerald-100" />
                   <span>Kas Operasional Mushola</span>
                 </div>
-                <div className="mt-2 text-[2.45rem] leading-none font-black tracking-[-0.03em] text-white">
+                <div className="mobile-money mt-2 text-[clamp(2rem,9vw,2.45rem)] leading-[0.92] font-black tracking-[-0.04em] text-white">
                   {isInitialLoading ? (
                     <ValueShimmer className="h-10 w-44 bg-white/18" />
                   ) : error ? (
@@ -122,14 +122,14 @@ export function HomeScreen({
             </div>
           </div>
 
-          <div className="mt-3 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(245,158,11,0.04))] p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+          <div className="mt-3 min-h-[142px] rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(245,158,11,0.04))] p-[clamp(14px,4vw,16px)] backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/68">
                   <Beef className="h-4 w-4 text-amber-100" />
                   <span>Dana Qurban</span>
                 </div>
-                <div className="mt-2 text-[2rem] leading-none font-black tracking-[-0.02em] text-white">
+                <div className="mobile-money mt-2 text-[clamp(1.7rem,7.8vw,2rem)] leading-[0.94] font-black tracking-[-0.03em] text-white">
                   {isInitialLoading ? (
                     <ValueShimmer className="h-9 w-36 bg-white/16" />
                   ) : error ? (
@@ -149,7 +149,7 @@ export function HomeScreen({
 
           <div className="mt-2 h-px bg-white/8" />
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-2.5">
             <ActionCard
               title="Informasi Qurban"
               subtitle={
@@ -168,13 +168,13 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-border bg-card p-6 shadow-[0_14px_36px_rgba(15,23,42,0.06)]">
+      <section className="rounded-[28px] border border-border bg-card p-[clamp(18px,5vw,24px)] shadow-[0_14px_36px_rgba(15,23,42,0.06)]">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Fokus Qurban
             </div>
-            <h3 className="mt-2 text-[1.6rem] leading-tight font-black tracking-tight text-foreground">
+            <h3 className="mt-2 text-[clamp(1.45rem,6vw,1.6rem)] leading-[1.05] font-black tracking-tight text-foreground">
               Progres Qurban Warga
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -212,7 +212,7 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="grid grid-cols-2 gap-3">
+      <section className="grid grid-cols-2 gap-2.5">
         <MiniStat
           icon={<TrendingUp className="h-4 w-4 text-primary" />}
           label="Kas Masuk"
@@ -441,7 +441,7 @@ function ActionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative overflow-hidden rounded-[24px] p-4 text-left transition-all duration-200 active:scale-[0.96] ${
+      className={`relative min-h-[132px] overflow-hidden rounded-[24px] p-[clamp(12px,3.6vw,16px)] text-left transition-all duration-200 active:scale-[0.96] ${
         isQurban
           ? "border border-white/28 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.12))] shadow-[0_14px_30px_rgba(0,0,0,0.18)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.10))]"
           : "border border-white/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(15,23,42,0.06))] shadow-[0_14px_30px_rgba(0,0,0,0.14)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(15,23,42,0.05))]"
@@ -462,10 +462,10 @@ function ActionCard({
       </div>
 
       <div className="mt-4">
-        <div className="text-[15px] leading-tight font-extrabold text-white">
+        <div className="text-[clamp(14px,4vw,15px)] leading-tight font-extrabold text-white">
           {title}
         </div>
-        <div className="mt-1 text-[12px] leading-relaxed text-white/72">
+        <div className="mt-1 text-[clamp(10px,2.9vw,12px)] leading-relaxed text-white/72">
           {subtitle}
         </div>
       </div>
@@ -485,7 +485,7 @@ function MiniStat({
   hint?: string;
 }) {
   return (
-    <div className="rounded-[24px] border border-border bg-card p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+    <div className="min-h-[128px] rounded-[24px] border border-border bg-card p-[clamp(14px,3.8vw,16px)] shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
       <div className="flex items-center gap-2">
         {icon}
         <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -493,7 +493,7 @@ function MiniStat({
         </span>
       </div>
       {value ? (
-        <div className="mt-3 text-[1.4rem] leading-none font-black tracking-[-0.02em] text-foreground">
+        <div className="mobile-money mt-3 text-[clamp(1.05rem,4.8vw,1.4rem)] leading-[0.96] font-black tracking-[-0.03em] text-foreground">
           {value}
         </div>
       ) : (

@@ -226,7 +226,7 @@ const Index = () => {
 
       {loadMessage && !refreshing && (
         <div className="px-4 pt-2">
-          <div className="mx-auto max-w-[520px] rounded-full border border-primary/10 bg-primary/5 px-3 py-2 text-center text-[11px] font-semibold tracking-wide text-primary/90 shadow-[0_8px_24px_rgba(22,101,52,0.06)]">
+          <div className="mx-auto max-w-[430px] rounded-full border border-primary/10 bg-primary/5 px-3 py-2 text-center text-[11px] font-semibold tracking-wide text-primary/90 shadow-[0_8px_24px_rgba(22,101,52,0.06)]">
             <span className="inline-flex items-center gap-2">
               <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
               {loadMessage}
@@ -235,7 +235,7 @@ const Index = () => {
         </div>
       )}
 
-      <div className="mx-auto max-w-[520px] px-4 pt-3 pb-[132px]">
+      <div className="mx-auto max-w-[430px] px-3.5 pt-3 pb-[128px] sm:px-4">
         {!(screen === "home" && !user) && (
           <header className="mb-4 py-2">
             <div className="flex items-start justify-between gap-4">

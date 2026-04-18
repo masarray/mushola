@@ -108,6 +108,12 @@
 }
 
 @layer utilities {
+  .mobile-money {
+    white-space: nowrap;
+    text-wrap: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.4s ease-out;
   }
