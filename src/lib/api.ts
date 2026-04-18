@@ -1,5 +1,5 @@
 const APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycby9PRznogJcmuzsJ7NaiSX4i4m--zW1CAiOMigPF0MTvj3ydWxNZEdkIx9YKAGXhwmK/exec';
+  'https://script.google.com/macros/s/AKfycbzlRSyAzc4RvryTmXVo8s8KnE4DPXGL7qe49jfVvpacZkJG_iEA3DDv3oW6KPCN_dkG/exec';
 
 /* ── Types ── */
 export interface QurbanGroup {
@@ -180,8 +180,16 @@ export async function loadPublicData(): Promise<PublicData> {
 }
 
 /* ── Auth API ── */
-export async function apiLogin(email: string): Promise<{ success: boolean; user?: DkmUser; message?: string }> {
-  return loadJsonp(`${APPS_SCRIPT_URL}?api=login&email=${encodeURIComponent(email)}`);
+export async function apiLogin(
+  email: string,
+  pin: string,
+): Promise<{ success: boolean; user?: DkmUser; message?: string }> {
+  const params = new URLSearchParams({
+    api: 'login',
+    email,
+    pin,
+  });
+  return loadJsonp(`${APPS_SCRIPT_URL}?${params.toString()}`);
 }
 
 /* ── Internal Dashboard ── */

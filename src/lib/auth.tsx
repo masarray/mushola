@@ -6,14 +6,15 @@ interface AuthState {
   loading: boolean;
   internalData: InternalData | null;
   internalLoading: boolean;
-  login: (email: string) => Promise<{ success: boolean; message?: string }>;
+  login: (email: string, pin: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   refreshInternal: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
 
-const STORAGE_KEY = 'dkm_user_email';
+const LEGACY_STORAGE_KEY = 'dkm_user_email';
+const REMEMBERED_EMAIL_KEY = 'dkm_login_email';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<DkmUser | null>(null);
@@ -35,13 +36,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const login = useCallback(async (email: string) => {
+  const login = useCallback(async (email: string, pin: string) => {
     setLoading(true);
     try {
-      const res = await apiLogin(email);
+      const res = await apiLogin(email, pin);
       if (res.success && res.user) {
         setUser(res.user);
-        localStorage.setItem(STORAGE_KEY, res.user.email);
+        localStorage.setItem(REMEMBERED_EMAIL_KEY, res.user.email);
         // Load internal data immediately
         setInternalLoading(true);
         try {
@@ -62,16 +63,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     setUser(null);
     setInternalData(null);
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
   }, []);
 
-  // Auto-login on mount
   useEffect(() => {
-    const savedEmail = localStorage.getItem(STORAGE_KEY);
-    if (savedEmail) {
-      login(savedEmail);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, internalData, internalLoading, login, logout, refreshInternal }}>
