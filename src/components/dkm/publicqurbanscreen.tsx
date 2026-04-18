@@ -99,11 +99,16 @@ export function PublicQurbanScreen({
     [data?.qurban?.groups],
   );
 
+  const fallbackLastGroup = useMemo(
+    () => groups[groups.length - 1]?.groupName || "",
+    [groups],
+  );
+
   useEffect(() => {
     if (!selectedGroup && groups.length > 0) {
-      setSelectedGroup(initialSelectedGroup || groups[0]?.groupName || "");
+      setSelectedGroup(initialSelectedGroup || fallbackLastGroup);
     }
-  }, [groups, selectedGroup, initialSelectedGroup]);
+  }, [groups, selectedGroup, initialSelectedGroup, fallbackLastGroup]);
 
   useEffect(() => {
     if (initialSelectedGroup) {
@@ -218,7 +223,7 @@ export function PublicQurbanScreen({
     });
   }, [publicRows]);
 
-  const activeGroup = selectedGroup || groups[0]?.groupName || "";
+  const activeGroup = selectedGroup || fallbackLastGroup;
   const visibleCards = useMemo(
     () => cards.filter((card) => card.grup === activeGroup),
     [cards, activeGroup],

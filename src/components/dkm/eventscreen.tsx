@@ -1,5 +1,6 @@
 import { PublicData } from "@/lib/api";
 import { formatCurrency, safeNumber, getProgressColor } from "@/lib/format";
+import { buildWhatsAppUrl, copyTextSmart } from "@/lib/mobile";
 import { ProgressBar } from "./progressbar";
 import {
   Beef,
@@ -91,6 +92,10 @@ export function EventScreen({
   const qurbanAccountName = "Muhammad Rifqi Syauqi";
   const qurbanAccountBank = "BSI";
   const qurbanConfirmPhone = "085646230887";
+  const qurbanConfirmWaUrl = buildWhatsAppUrl(
+    qurbanConfirmPhone,
+    "Assalamu'alaikum Pak Rifqi, saya ingin konfirmasi pembayaran qurban.",
+  );
 
   const handleOpenGroups = () => {
     const fallbackLastGroup = [...groups]
@@ -112,7 +117,8 @@ export function EventScreen({
 
   const handleCopyAccountNumber = async () => {
     try {
-      await navigator.clipboard.writeText(qurbanAccountNumber);
+      const copied = await copyTextSmart(qurbanAccountNumber);
+      if (!copied) throw new Error("copy_failed");
       toast({
         title: "Nomor rekening berhasil disalin",
         description: `${qurbanAccountBank} ${qurbanAccountNumber}`,
@@ -252,10 +258,16 @@ export function EventScreen({
                 <Copy className="h-4 w-4" />
                 Salin Nomor Rekening
               </button>
-              <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+
+              <a
+                href={qurbanConfirmWaUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100 active:scale-[0.98]"
+              >
                 <Phone className="h-4 w-4" />
-                Konfirmasi ke {qurbanConfirmPhone} (Pak Rifqi)
-              </div>
+                Konfirmasi via WA
+              </a>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
               Setelah transfer, mohon konfirmasi ke {qurbanConfirmPhone} agar pembayaran cepat dicatat.

@@ -131,12 +131,16 @@ const Index = () => {
     }
 
     if (s === "qurban") {
-      setPublicQurbanDefaultGroup(options?.defaultGroup || "");
+      const fallbackLastGroup =
+        Array.isArray(data?.qurban?.groups) && data.qurban.groups.length > 0
+          ? data.qurban.groups[data.qurban.groups.length - 1]?.groupName || ""
+          : "";
+      setPublicQurbanDefaultGroup(options?.defaultGroup || fallbackLastGroup);
     }
 
     setScreen(s);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [user]);
+  }, [user, data?.qurban?.groups]);
 
   useEffect(() => {
     if (screen === "input" && user?.role !== "BENDAHARA") {

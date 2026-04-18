@@ -31,12 +31,12 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
-      <section className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-card">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
+      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.06),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
         <div className="relative">
         <div className="mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-dkm-green-soft flex items-center justify-center mb-4">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[18px] border border-primary/10 bg-dkm-green-soft/80 shadow-[0_10px_24px_rgba(22,101,52,0.08)]">
             <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
           <h3 className="font-heading text-xl font-bold text-foreground">
@@ -58,7 +58,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             placeholder="nama@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-11 h-12 rounded-2xl bg-background border-border text-sm"
+            className="h-12 rounded-2xl border-border bg-white/80 pl-11 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
             onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             disabled={loading}
           />
@@ -71,7 +71,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         <Button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full mt-5 h-12 rounded-2xl bg-gradient-to-b from-primary to-dkm-green-strong
+          className="mt-5 h-12 w-full rounded-2xl bg-gradient-to-b from-primary to-dkm-green-strong
                      text-primary-foreground font-bold text-sm shadow-soft hover:shadow-elevated
                      transition-all duration-200 active:scale-[0.98]"
         >

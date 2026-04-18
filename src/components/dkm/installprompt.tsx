@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Download, Share2, X } from "lucide-react";
+import { isIosDevice, isIosSafari } from "@/lib/mobile";
 
 declare global {
   interface BeforeInstallPromptEvent extends Event {
@@ -9,10 +10,6 @@ declare global {
 }
 
 const DISMISS_KEY = "dkm_install_prompt_dismissed_v1";
-
-function isIos() {
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-}
 
 function isStandalone() {
   return (
@@ -50,7 +47,7 @@ export function InstallPrompt() {
   }, []);
 
   const showIosHint = useMemo(
-    () => !installed && !dismissed && !deferredPrompt && isIos(),
+    () => !installed && !dismissed && !deferredPrompt && isIosDevice(),
     [dismissed, deferredPrompt, installed],
   );
 
@@ -117,7 +114,9 @@ export function InstallPrompt() {
           {showIosHint && (
             <div className="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
               <Share2 className="h-4 w-4" />
-              Di iPhone: tekan Share lalu Add to Home Screen
+              {isIosSafari()
+                ? "Di iPhone Safari: tekan Share lalu Add to Home Screen"
+                : "Di iPhone: buka dulu lewat Safari, lalu Share > Add to Home Screen"}
             </div>
           )}
         </div>

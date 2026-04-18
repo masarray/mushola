@@ -8,6 +8,7 @@ import {
   QurbanRow,
 } from "@/lib/api";
 import { formatCurrency, safeNumber } from "@/lib/format";
+import { buildWhatsAppUrl, copyTextSmart } from "@/lib/mobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,6 +45,11 @@ const QURBAN_ACCOUNT = {
   number: "7126194832",
   phone: "085646230887",
 } as const;
+
+const QURBAN_WA_URL = buildWhatsAppUrl(
+  QURBAN_ACCOUNT.phone,
+  "Assalamu'alaikum Pak Rifqi, saya ingin konfirmasi pembayaran qurban.",
+);
 
 function onlyDigits(value: string) {
   return value.replace(/[^\d]/g, "");
@@ -372,7 +378,8 @@ export function QurbanScreen() {
 
   async function handleCopyAccountNumber() {
     try {
-      await navigator.clipboard.writeText(QURBAN_ACCOUNT.number);
+      const copied = await copyTextSmart(QURBAN_ACCOUNT.number);
+      if (!copied) throw new Error("copy_failed");
       toast({
         title: "Nomor rekening berhasil disalin",
         description: `${QURBAN_ACCOUNT.bank} ${QURBAN_ACCOUNT.number}`,
@@ -457,7 +464,10 @@ export function QurbanScreen() {
             </div>
           </section>
 
-          <section className="sticky top-3 z-10 rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-4 shadow-[0_16px_34px_rgba(16,185,129,0.10)] backdrop-blur">
+          <section className="sticky top-3 z-10 overflow-hidden rounded-[30px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-4 shadow-[0_16px_34px_rgba(16,185,129,0.10)] backdrop-blur">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_24%)] pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+            <div className="relative">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
@@ -484,10 +494,12 @@ export function QurbanScreen() {
                 Salin
               </button>
             </div>
+            </div>
           </section>
 
-          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-4 shadow-card">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.05),transparent_30%)] pointer-events-none" />
+          <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.05),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.96))] pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
             <div className="relative">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -616,7 +628,10 @@ export function QurbanScreen() {
           </section>
 
           {view === "history" ? (
-            <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
+            <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_28%)] pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+              <div className="relative">
               <div className="mb-4 flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/8 text-primary">
                   <ReceiptText className="h-4 w-4" />
@@ -662,9 +677,13 @@ export function QurbanScreen() {
                   ))
                 )}
               </div>
+              </div>
             </section>
           ) : (
-            <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
+            <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.05),transparent_28%)] pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+              <div className="relative">
               <div className="space-y-3">
                 {filteredRows.map((row) => (
                   <button
@@ -734,6 +753,7 @@ export function QurbanScreen() {
                     </div>
                   </button>
                 ))}
+              </div>
               </div>
             </section>
           )}
@@ -835,7 +855,10 @@ export function QurbanScreen() {
             </section>
           )}
 
-          <section className="rounded-[28px] border border-border bg-card p-4 shadow-card space-y-4">
+          <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-4 shadow-[0_14px_36px_rgba(15,23,42,0.05)] space-y-4">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.05),transparent_28%)] pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+            <div className="relative space-y-4">
             <div className="rounded-[24px] border border-primary/25 bg-background p-3">
               <Input
                 ref={nominalRef}
@@ -888,6 +911,15 @@ export function QurbanScreen() {
                   <div className="mt-2 text-xs text-muted-foreground">
                     Konfirmasi transfer ke {QURBAN_ACCOUNT.phone} (Pak Rifqi).
                   </div>
+                  <a
+                    href={QURBAN_WA_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-700 px-3 py-2 text-xs font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.18)] transition hover:bg-emerald-800 active:scale-[0.98]"
+                  >
+                    <Phone className="h-3.5 w-3.5" />
+                    Konfirmasi via WA
+                  </a>
                 </div>
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
                   <Building2 className="h-5 w-5" />
@@ -926,6 +958,7 @@ export function QurbanScreen() {
                 Shohibul ini sudah lunas.
               </div>
             )}
+            </div>
           </section>
         </>
       )}
