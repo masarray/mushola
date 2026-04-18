@@ -65,9 +65,7 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
 
   return (
     <nav
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[min(500px,calc(100vw-24px))] z-20
-                 bg-card/95 backdrop-blur-xl border border-border rounded-[22px] shadow-elevated
-                 p-2 flex items-center justify-around gap-1"
+      className="fixed bottom-4 left-1/2 z-20 flex w-[min(520px,calc(100vw-32px))] -translate-x-1/2 items-center justify-around gap-1 rounded-full border border-border/90 bg-card/94 p-2 shadow-[0_12px_28px_rgba(15,23,42,0.10),0_1px_0_rgba(255,255,255,0.72)_inset] backdrop-blur-xl"
       aria-label="Navigasi utama"
     >
       {items.map((item) => {
@@ -78,22 +76,41 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
             key={item.screen}
             onClick={() => onNavigate(item.screen)}
             className={cn(
-              "flex flex-col items-center gap-0.5 py-2.5 px-3 rounded-2xl transition-all duration-200 active:scale-[0.97] min-w-[48px]",
+              "group relative flex min-w-[64px] flex-1 items-center justify-center px-1 py-1 transition-all duration-200 active:scale-[0.94]",
               isActive
-                ? "bg-dkm-green-soft text-primary font-semibold"
-                : "text-muted-foreground hover:bg-muted/50",
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground",
             )}
+            aria-current={isActive ? "page" : undefined}
           >
-            <Icon
+            <div
               className={cn(
-                "w-5 h-5",
-                isActive ? "text-primary" : "text-muted-foreground",
+                "flex h-[58px] w-[58px] flex-col items-center justify-center rounded-full transition-all duration-200",
+                isActive
+                  ? "bg-dkm-green-soft shadow-[0_10px_24px_rgba(22,101,52,0.18),0_2px_0_rgba(255,255,255,0.68)_inset]"
+                  : "bg-transparent group-hover:bg-muted/45 active:bg-muted/70 active:shadow-[0_6px_16px_rgba(15,23,42,0.10)_inset]",
               )}
-              strokeWidth={isActive ? 2.5 : 2}
-            />
-            <span className="text-[10px] font-semibold leading-tight">
-              {item.label}
-            </span>
+            >
+              <Icon
+                className={cn(
+                  "h-[21px] w-[21px] transition-all duration-200",
+                  isActive
+                    ? "scale-110 text-primary"
+                    : "text-muted-foreground group-hover:scale-105 group-hover:text-foreground",
+                )}
+                strokeWidth={isActive ? 2.4 : 2}
+              />
+              <span
+                className={cn(
+                  "mt-0.5 text-[10px] font-semibold leading-none transition-colors duration-200",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground group-hover:text-foreground",
+                )}
+              >
+                {item.label}
+              </span>
+            </div>
           </button>
         );
       })}

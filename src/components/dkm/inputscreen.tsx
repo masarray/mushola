@@ -54,6 +54,7 @@ function sanitizeNumericInput(value: string) {
 export function InputScreen() {
   const { user, refreshInternal } = useAuth();
   const { toast } = useToast();
+  const isBendahara = user?.role === 'BENDAHARA';
 
   const nominalRef = useRef<HTMLInputElement | null>(null);
   const categoryRef = useRef<HTMLInputElement | null>(null);
@@ -131,8 +132,29 @@ export function InputScreen() {
   const effectiveKategori = manualMode ? manualCategory.trim() : kategori.trim();
 
   const canSubmit = useMemo(() => {
-    return Boolean(user && effectiveKategori && nominalValue > 0 && !submitting);
-  }, [user, effectiveKategori, nominalValue, submitting]);
+    return Boolean(
+      isBendahara && user && effectiveKategori && nominalValue > 0 && !submitting,
+    );
+  }, [isBendahara, user, effectiveKategori, nominalValue, submitting]);
+
+  if (!isBendahara) {
+    return (
+      <div className="space-y-4 animate-fade-in">
+        <div className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            Akses Dibatasi
+          </div>
+          <h3 className="mt-2 text-xl font-black tracking-tight text-foreground">
+            Form input hanya untuk bendahara
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Pengurus tetap bisa memantau rekap dan progres qurban, tetapi tidak bisa
+            membuat transaksi operasional maupun input pembayaran qurban.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const resetFormSmart = useCallback(() => {
     setTanggal(new Date().toISOString().split('T')[0]);

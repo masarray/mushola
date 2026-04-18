@@ -12,7 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 
-const APP_ICON_URL = `${import.meta.env.BASE_URL}icon.svg`;
+const APP_ICON_URL = `${import.meta.env.BASE_URL}favicon.svg`;
 
 interface HomeScreenProps {
   data: PublicData | null;

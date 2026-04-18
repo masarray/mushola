@@ -14,7 +14,7 @@ import { getErrorMessage, loadPublicData, type PublicData } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { RefreshCw } from "lucide-react";
 
-const APP_ICON_URL = `${import.meta.env.BASE_URL}icon.svg`;
+const APP_ICON_URL = `${import.meta.env.BASE_URL}favicon.svg`;
 const PUBLIC_CACHE_KEY = "dkm_public_data_cache_v1";
 const PUBLIC_CACHE_TTL_MS = 1000 * 60 * 3;
 
@@ -25,6 +25,7 @@ type PublicCachePayload = {
 
 const Index = () => {
   const { user } = useAuth();
+  const isBendahara = user?.role === "BENDAHARA";
   const [screen, setScreen] = useState<Screen>("home");
   const [data, setData] = useState<PublicData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -122,9 +123,21 @@ const Index = () => {
   }, [user]);
 
   const navigate = useCallback((s: Screen) => {
+    if (s === "input" && user?.role !== "BENDAHARA") {
+      setScreen("rekap");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     setScreen(s);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (screen === "input" && user?.role !== "BENDAHARA") {
+      setScreen(user ? "rekap" : "login");
+    }
+  }, [screen, user]);
 
   const handleLoginSuccess = useCallback(() => {
     // Handled by auth state effect.
@@ -228,7 +241,7 @@ const Index = () => {
                 </h1>
                 {user && (
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {user.name} · {user.role}
+                    {user.name} - {user.role}
                   </p>
                 )}
                 {!user && (
@@ -269,9 +282,18 @@ const Index = () => {
           {screen === "login" && (
             <LoginScreen onLoginSuccess={handleLoginSuccess} />
           )}
-          {screen === "input" && <InputScreen />}
+          {screen === "input" && isBendahara && <InputScreen />}
           {screen === "rekap" && <RekapScreen />}
-          {screen === "qurban" && <QurbanScreen />}
+          {screen === "qurban" &&
+            (user ? (
+              <QurbanScreen />
+            ) : (
+              <PublicQurbanScreen
+                data={data}
+                loading={loading}
+                isRefreshing={isRefreshingFromCache}
+              />
+            ))}
           {screen === "audit" && <AuditScreen />}
           {screen === "account" && <AccountScreen />}
         </main>

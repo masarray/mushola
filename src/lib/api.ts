@@ -41,6 +41,7 @@ export interface PublicData {
     totalEmpty?: number;
     groups?: QurbanGroup[];
   };
+  qurbanRows?: QurbanRow[];
   seasonal: {
     heroEvent: string;
     ramadhanMode?: string;

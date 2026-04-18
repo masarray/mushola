@@ -15,6 +15,7 @@ type Tab = 'corrections' | 'logs';
 export function AuditScreen() {
   const { user, internalData, refreshInternal } = useAuth();
   const { toast } = useToast();
+  const isBendahara = user?.role === 'BENDAHARA';
   const [tab, setTab] = useState<Tab>('corrections');
 
   // Correction modal
@@ -30,15 +31,16 @@ export function AuditScreen() {
   const transactions = internalData?.recentTransactions || [];
 
   const openCorrectionModal = useCallback((refId: string, oldNominal: number) => {
+    if (!isBendahara) return;
     setCorrRefId(refId);
     setCorrOldValue(oldNominal);
     setCorrNewValue('');
     setCorrReason('');
     setShowModal(true);
-  }, []);
+  }, [isBendahara]);
 
   const handleSubmitCorrection = useCallback(async () => {
-    if (!user) return;
+    if (!user || !isBendahara) return;
     const newVal = Number(corrNewValue);
     if (isNaN(newVal) || newVal < 0) return toast({ title: 'Nilai baru tidak valid', variant: 'destructive' });
     if (!corrReason.trim()) return toast({ title: 'Alasan wajib diisi', variant: 'destructive' });
@@ -63,7 +65,7 @@ export function AuditScreen() {
     } finally {
       setSubmitting(false);
     }
-  }, [user, corrRefId, corrNewValue, corrReason, toast, refreshInternal]);
+  }, [user, isBendahara, corrRefId, corrNewValue, corrReason, toast, refreshInternal]);
 
   // Only NORMAL transactions can be corrected
   const correctableTransactions = transactions.filter(t => t.status === 'NORMAL');
@@ -99,7 +101,9 @@ export function AuditScreen() {
                 Koreksi Transaksi
               </h3>
               <p className="text-xs text-muted-foreground mb-4">
-                Klik tombol "Koreksi" pada transaksi yang perlu diperbaiki.
+                {isBendahara
+                  ? 'Klik tombol "Koreksi" pada transaksi yang perlu diperbaiki.'
+                  : 'Mode pengurus hanya dapat melihat riwayat koreksi tanpa mengubah transaksi.'}
               </p>
               <div className="space-y-2">
                 {correctableTransactions.slice(0, 10).map((trx) => (
@@ -112,9 +116,14 @@ export function AuditScreen() {
                     </div>
                     <button
                       onClick={() => openCorrectionModal(trx.id, Number(trx.nominal))}
-                      className="px-3 py-1.5 text-[11px] font-bold bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"
+                      disabled={!isBendahara}
+                      className={`px-3 py-1.5 text-[11px] font-bold rounded-lg transition-colors ${
+                        isBendahara
+                          ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                          : 'bg-muted text-muted-foreground cursor-not-allowed'
+                      }`}
                     >
-                      Koreksi
+                      {isBendahara ? 'Koreksi' : 'Terkunci'}
                     </button>
                   </div>
                 ))}
@@ -187,7 +196,7 @@ export function AuditScreen() {
       )}
 
       {/* Correction Modal */}
-      {showModal && (
+      {showModal && isBendahara && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center p-4">
           <div className="bg-card rounded-3xl border border-border p-6 w-full max-w-md shadow-elevated animate-fade-in">
             <div className="flex items-center justify-between mb-4">

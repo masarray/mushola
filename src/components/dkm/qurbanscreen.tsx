@@ -205,6 +205,7 @@ function ProgressStrip({ value, tone }: { value: number; tone: string }) {
 export function QurbanScreen() {
   const { user, internalData, refreshInternal, internalLoading } = useAuth();
   const { toast } = useToast();
+  const isBendahara = user?.role === "BENDAHARA";
   const nominalRef = useRef<HTMLInputElement | null>(null);
 
   const [view, setView] = useState<ViewTab>("select");
@@ -301,7 +302,7 @@ export function QurbanScreen() {
   }
 
   async function handleSubmit() {
-    if (!user || !selected) return;
+    if (!user || !selected || !isBendahara) return;
 
     const parsed = Number(nominal || "0");
     if (!parsed || parsed <= 0) {
@@ -386,6 +387,7 @@ export function QurbanScreen() {
   }
 
   function handleSelectShohibul(shohibulId: string, groupName: string) {
+    if (!isBendahara) return;
     setSelectedGroup(groupName);
     setSelectedShohibulId(shohibulId);
     setNominal("");
@@ -601,6 +603,12 @@ export function QurbanScreen() {
                 />
               </div>
             </div>
+
+            {!isBendahara && (
+              <div className="mt-4 rounded-2xl border border-border bg-muted/25 px-4 py-3 text-sm text-muted-foreground">
+                Mode pengurus hanya untuk memantau progres. Aksi menuju daftar nama shohibul dan form input pembayaran dikunci untuk bendahara saja.
+              </div>
+            )}
           </section>
 
           {view === "history" ? (
@@ -658,10 +666,13 @@ export function QurbanScreen() {
                   <button
                     key={row.shohibulId}
                     type="button"
-                    onClick={() =>
-                      handleSelectShohibul(row.shohibulId, row.grup)
-                    }
-                    className="w-full rounded-[24px] border border-border bg-background px-4 py-4 text-left transition-all hover:border-primary/40 hover:bg-primary/5"
+                    onClick={() => handleSelectShohibul(row.shohibulId, row.grup)}
+                    disabled={!isBendahara}
+                    className={`w-full rounded-[24px] border border-border bg-background px-4 py-4 text-left transition-all ${
+                      isBendahara
+                        ? "hover:border-primary/40 hover:bg-primary/5"
+                        : "cursor-not-allowed"
+                    }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
