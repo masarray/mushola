@@ -1,5 +1,5 @@
 const APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbzlRSyAzc4RvryTmXVo8s8KnE4DPXGL7qe49jfVvpacZkJG_iEA3DDv3oW6KPCN_dkG/exec';
+  'https://script.google.com/macros/s/AKfycbzQclwslwbjDjHvYA0TRfrZqtU9w2qsC4xkafvKyJBpf_XvH1PS04Nxxsx9aNA3dtEk/exec';
 
 /* ── Types ── */
 export interface QurbanGroup {
@@ -56,6 +56,13 @@ export interface DkmUser {
   role: 'BENDAHARA' | 'PENGURUS';
 }
 
+export interface MasterKategoriOption {
+  kategori: string;
+  jenisDefault: 'PEMASUKAN' | 'PENGELUARAN';
+  eventDefault: 'Operasional' | 'Ramadhan' | 'Qurban' | string;
+  urutan: number;
+}
+
 export interface Transaction {
   id: string;
   tanggal: string;
@@ -68,6 +75,21 @@ export interface Transaction {
   status: 'NORMAL' | 'KOREKSI';
   refId?: string;
   correctionReason?: string;
+}
+
+export interface TransactionDetail {
+  id: string;
+  tanggal: string;
+  jenis: 'PEMASUKAN' | 'PENGELUARAN';
+  kategori: string;
+  event: string;
+  metode: string;
+  nominal: number;
+  keterangan: string;
+  status: 'NORMAL' | 'KOREKSI';
+  inputByEmail: string;
+  inputByName: string;
+  inputByRole: string;
 }
 
 export function getErrorMessage(error: unknown): string {
@@ -124,6 +146,7 @@ export interface AuditLog {
 export interface InternalData {
   success: boolean;
   user: DkmUser;
+  masterKategori: MasterKategoriOption[];
   summary: PublicData['summary'];
   qurban: PublicData['qurban'];
   qurbanRows: QurbanRow[];
@@ -235,6 +258,58 @@ export async function apiSubmitCorrection(payload: {
     refId: payload.refId,
     nilaiSeharusnya: String(payload.nilaiSeharusnya),
     alasan: payload.alasan,
+  });
+  return loadJsonp(`${APPS_SCRIPT_URL}?${params.toString()}`);
+}
+
+export async function apiGetTransactionDetail(payload: {
+  email: string;
+  transactionId: string;
+}): Promise<{
+  success: boolean;
+  transaction?: TransactionDetail;
+  editableFields?: string[];
+  canRevise?: boolean;
+  message?: string;
+}> {
+  const params = new URLSearchParams({
+    api: 'get_transaction_detail',
+    email: payload.email,
+    transactionId: payload.transactionId,
+  });
+  return loadJsonp(`${APPS_SCRIPT_URL}?${params.toString()}`);
+}
+
+export async function apiReviseTransaction(payload: {
+  email: string;
+  transactionId: string;
+  tanggal: string;
+  kategori: string;
+  event: string;
+  metode: string;
+  nominal: number;
+  keterangan: string;
+  reason: string;
+}): Promise<{
+  success: boolean;
+  transactionId?: string;
+  reason?: string;
+  before?: Record<string, unknown>;
+  after?: Record<string, unknown>;
+  changedFields?: Array<{ field: string; before: unknown; after: unknown }>;
+  message?: string;
+}> {
+  const params = new URLSearchParams({
+    api: 'revise_transaction',
+    email: payload.email,
+    transactionId: payload.transactionId,
+    tanggal: payload.tanggal,
+    kategori: payload.kategori,
+    event: payload.event,
+    metode: payload.metode,
+    nominal: String(payload.nominal),
+    keterangan: payload.keterangan,
+    reason: payload.reason,
   });
   return loadJsonp(`${APPS_SCRIPT_URL}?${params.toString()}`);
 }
