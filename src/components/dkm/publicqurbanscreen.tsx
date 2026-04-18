@@ -65,7 +65,7 @@ function PillSkeleton() {
 
 function CardSkeleton() {
   return (
-    <div className="rounded-[24px] border border-border bg-white/90 p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+    <div className="rounded-[22px] border border-border bg-white/90 p-4 shadow-[0_2px_8px_rgba(15,23,42,0.05)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <div className="h-11 w-11 animate-pulse rounded-2xl bg-muted/45" />
@@ -295,7 +295,7 @@ export function PublicQurbanScreen({
               })}
         </div>
 
-        <div className="mt-5 rounded-[24px] border border-border bg-background/90 p-4">
+        <div className="mt-5 rounded-[22px] border border-border bg-background/90 p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -336,6 +336,9 @@ export function PublicQurbanScreen({
             <div className="text-[1.1rem] font-black tracking-tight text-foreground">
               Daftar warga pada {activeGroup || "grup qurban"}
             </div>
+            <div className="mt-1 text-[12px] text-muted-foreground">
+              Status cepat: terdaftar, dalam proses, atau lunas.
+            </div>
           </div>
         </div>
 
@@ -359,7 +362,7 @@ export function PublicQurbanScreen({
           {visibleCards.map((card, idx) => (
             <article
               key={`${card.grup}-${card.nama}-${idx}`}
-              className="rounded-[24px] border border-border bg-white/90 p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
+              className="rounded-[22px] border border-border bg-white/90 p-4 shadow-[0_2px_8px_rgba(15,23,42,0.05)]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -368,7 +371,7 @@ export function PublicQurbanScreen({
                   </div>
 
                   <div className="min-w-0">
-                    <div className="text-[1rem] font-black leading-tight text-foreground">
+                    <div className="line-clamp-2 text-[1rem] font-black leading-tight text-foreground">
                       {card.nama}
                     </div>
 
@@ -388,8 +391,8 @@ export function PublicQurbanScreen({
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <div className="text-sm font-black text-foreground">{card.progressPct}%</div>
-                  <div className="text-[11px] text-muted-foreground">progres</div>
+                  <div className="text-base font-black text-foreground">{card.progressPct}%</div>
+                  <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">progres</div>
                 </div>
               </div>
 

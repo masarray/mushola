@@ -155,7 +155,7 @@ export function HomeScreen({
               subtitle={
                 isInitialLoading
                   ? "Menyiapkan progres qurban..."
-                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot · ${qurbanPct}%`
+                  : `${qurbanFilled}/${qurbanSlots || qurbanFilled} slot • ${qurbanPct}%`
               }
               onClick={() => onNavigate?.("event")}
             />
@@ -204,7 +204,7 @@ export function HomeScreen({
           <button
             type="button"
             onClick={() => onNavigate?.("event")}
-            className="inline-flex items-center gap-1 font-bold text-primary transition-all hover:gap-1.5 hover:underline"
+            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary/8 px-4 font-bold text-primary active:scale-[0.98]"
           >
             Lihat detail
             <ArrowRight className="h-4 w-4" />
@@ -241,7 +241,7 @@ export function HomeScreen({
             <button
               type="button"
               onClick={() => onNavigate?.("event")}
-              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)] transition hover:gap-1.5"
+              className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-white/90 px-4 text-xs font-bold text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)] active:scale-[0.98]"
             >
               Lihat rekening
               <ArrowRight className="h-3.5 w-3.5" />
@@ -441,7 +441,7 @@ function ActionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative overflow-hidden rounded-[24px] p-4 text-left transition-all duration-200 active:scale-[0.96] ${
+      className={`relative overflow-hidden rounded-[24px] p-4 text-left transition-all duration-200 active:scale-[0.96] ${
         isQurban
           ? "border border-white/28 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.12))] shadow-[0_14px_30px_rgba(0,0,0,0.18)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.10))]"
           : "border border-white/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(15,23,42,0.06))] shadow-[0_14px_30px_rgba(0,0,0,0.14)] active:bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(15,23,42,0.05))]"
@@ -458,7 +458,7 @@ function ActionCard({
           <Icon className="h-4 w-4 text-white" />
         </div>
 
-        <ArrowRight className="h-4 w-4 text-white/86 transition-transform duration-200 group-hover:translate-x-1" />
+        <ArrowRight className="h-4 w-4 text-white/86" />
       </div>
 
       <div className="mt-4">

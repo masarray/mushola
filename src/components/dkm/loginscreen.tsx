@@ -22,7 +22,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
     const res = await login(email.trim());
     if (res.success) {
-      toast({ title: 'Login berhasil ✓' });
+      toast({ title: 'Login berhasil' });
       onLoginSuccess();
     } else {
       toast({ title: res.message || 'Login gagal', variant: 'destructive' });
@@ -43,7 +43,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             Masuk ke Panel Internal
           </h3>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            Bendahara dan pengurus memakai panel yang lebih cepat untuk input dan monitoring keuangan.
+            Panel ini dipakai bendahara dan pengurus untuk tugas internal. Warga cukup memakai halaman publik.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         </div>
 
         <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
-          Login diproses lewat backend Apps Script. Hanya email yang terdaftar di sheet USERS yang bisa masuk.
+          Login diproses lewat backend Apps Script. Hanya email yang terdaftar di sheet USERS yang dapat masuk.
         </p>
 
         <Button

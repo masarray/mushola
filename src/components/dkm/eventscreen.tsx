@@ -75,7 +75,6 @@ export function EventScreen({
   data,
   loading,
   isRefreshing = false,
-  canOpenGroupsDetail = false,
   onOpenGroupsDetail,
 }: EventScreenProps) {
   const { toast } = useToast();
@@ -167,7 +166,7 @@ export function EventScreen({
               icon={<Users className="h-4 w-4 text-emerald-700" />}
               label="Peserta"
               value={isInitialLoading ? null : `${qurbanFilled}/${qurbanSlots}`}
-              subtext={`Yuk! ${Math.max(0, qurbanSlots - qurbanFilled)} orang lagi...`}
+              subtext={`${Math.max(0, qurbanSlots - qurbanFilled)} slot masih terbuka`}
             />
             <SummaryCard
               icon={<CircleDollarSign className="h-4 w-4 text-amber-700" />}
@@ -204,7 +203,7 @@ export function EventScreen({
                 <button
                   type="button"
                   onClick={handleOpenGroups}
-                  className="rounded-full bg-emerald-700 px-4 py-2 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.20)] transition hover:bg-emerald-800 active:scale-[0.98]"
+                  className="h-11 rounded-full bg-emerald-700 px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.20)] active:scale-[0.98]"
                 >
                   <span className="inline-flex items-center gap-1.5">
                     Lihat Grup
@@ -253,7 +252,7 @@ export function EventScreen({
               <button
                 type="button"
                 onClick={handleCopyAccountNumber}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.18)] transition hover:bg-emerald-800 active:scale-[0.98]"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(4,120,87,0.18)] active:scale-[0.98]"
               >
                 <Copy className="h-4 w-4" />
                 Salin Nomor Rekening
@@ -263,7 +262,7 @@ export function EventScreen({
                 href={qurbanConfirmWaUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100 active:scale-[0.98]"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-800 active:scale-[0.98]"
               >
                 <Phone className="h-4 w-4" />
                 Konfirmasi via WA
@@ -393,7 +392,7 @@ function SummaryCard({
 
 function GroupCardPlaceholder() {
   return (
-    <div className="rounded-[24px] border border-border bg-card p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+    <div className="rounded-[22px] border border-border bg-card p-4 shadow-[0_2px_8px_rgba(15,23,42,0.05)]">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="h-4 w-28 animate-pulse rounded-full bg-muted/60" />
