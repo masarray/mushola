@@ -20,7 +20,7 @@ interface EventScreenProps {
   loading: boolean;
   isRefreshing?: boolean;
   canOpenGroupsDetail?: boolean;
-  onOpenGroupsDetail?: () => void;
+  onOpenGroupsDetail?: (groupName?: string) => void;
 }
 
 type QurbanGroup = NonNullable<PublicData["qurban"]["groups"]>[number] & {
@@ -93,8 +93,14 @@ export function EventScreen({
   const qurbanConfirmPhone = "085646230887";
 
   const handleOpenGroups = () => {
-    if (canOpenGroupsDetail && onOpenGroupsDetail) {
-      onOpenGroupsDetail();
+    const fallbackLastGroup = [...groups]
+      .reverse()
+      .find((group) => safeNumber(group.filledSlots) < safeNumber(group.totalSlots));
+    const targetGroupName =
+      fallbackLastGroup?.groupName || groups[groups.length - 1]?.groupName;
+
+    if (onOpenGroupsDetail) {
+      onOpenGroupsDetail(targetGroupName);
       return;
     }
 
@@ -124,6 +130,7 @@ export function EventScreen({
     <div className="flex flex-col gap-5 animate-fade-in pb-2">
       <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,250,248,1))]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/70" />
         <div className="relative p-5">
           {isRefreshing && (
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/85 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700 shadow-[0_8px_18px_rgba(16,185,129,0.08)]">
@@ -206,8 +213,9 @@ export function EventScreen({
 
       <section
         ref={groupsSectionRef}
-        className="rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
+        className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]"
       >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.05),transparent_32%)] pointer-events-none" />
         <div className="mb-5 rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-5 shadow-[0_14px_32px_rgba(16,185,129,0.08)]">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">

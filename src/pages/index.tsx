@@ -26,6 +26,7 @@ type PublicCachePayload = {
 const Index = () => {
   const { user } = useAuth();
   const isBendahara = user?.role === "BENDAHARA";
+  const [publicQurbanDefaultGroup, setPublicQurbanDefaultGroup] = useState<string>("");
   const [screen, setScreen] = useState<Screen>("home");
   const [data, setData] = useState<PublicData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -122,11 +123,15 @@ const Index = () => {
     });
   }, [user]);
 
-  const navigate = useCallback((s: Screen) => {
+  const navigate = useCallback((s: Screen, options?: { defaultGroup?: string }) => {
     if (s === "input" && user?.role !== "BENDAHARA") {
       setScreen("rekap");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
+    }
+
+    if (s === "qurban") {
+      setPublicQurbanDefaultGroup(options?.defaultGroup || "");
     }
 
     setScreen(s);
@@ -276,7 +281,9 @@ const Index = () => {
               loading={loading}
               isRefreshing={isRefreshingFromCache}
               canOpenGroupsDetail={Boolean(user)}
-              onOpenGroupsDetail={() => navigate("qurban")}
+              onOpenGroupsDetail={(groupName) =>
+                navigate("qurban", { defaultGroup: groupName })
+              }
             />
           )}
           {screen === "login" && (
@@ -292,6 +299,7 @@ const Index = () => {
                 data={data}
                 loading={loading}
                 isRefreshing={isRefreshingFromCache}
+                initialSelectedGroup={publicQurbanDefaultGroup}
               />
             ))}
           {screen === "audit" && <AuditScreen />}

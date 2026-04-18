@@ -140,7 +140,9 @@ export function InputScreen() {
   if (!isBendahara) {
     return (
       <div className="space-y-4 animate-fade-in">
-        <div className="rounded-[28px] border border-border bg-card p-5 shadow-card">
+        <div className="relative overflow-hidden rounded-[28px] border border-border bg-card p-5 shadow-card">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
+          <div className="relative">
           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             Akses Dibatasi
           </div>
@@ -151,6 +153,7 @@ export function InputScreen() {
             Pengurus tetap bisa memantau rekap dan progres qurban, tetapi tidak bisa
             membuat transaksi operasional maupun input pembayaran qurban.
           </p>
+          </div>
         </div>
       </div>
     );
@@ -272,8 +275,9 @@ export function InputScreen() {
 
   return (
     <div className="space-y-4 pb-4">
-      <div className="rounded-[28px] border bg-card/90 backdrop-blur-sm shadow-soft overflow-hidden">
-        <div className="p-4 sm:p-5 space-y-4">
+      <div className="relative overflow-hidden rounded-[28px] border bg-card/90 backdrop-blur-sm shadow-soft">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,246,241,0.95))]" />
+        <div className="relative p-4 sm:p-5 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
@@ -359,8 +363,9 @@ export function InputScreen() {
         </div>
       </div>
 
-      <div className="rounded-[28px] border bg-card shadow-soft overflow-hidden">
-        <div className="p-4 sm:p-5 space-y-5">
+      <div className="relative overflow-hidden rounded-[28px] border bg-card shadow-soft">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.06),transparent_28%)] pointer-events-none" />
+        <div className="relative p-4 sm:p-5 space-y-5">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">

@@ -31,7 +31,10 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
-      <section className="bg-card rounded-3xl border border-border p-6 shadow-card">
+      <section className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-card">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative">
         <div className="mb-6">
           <div className="w-12 h-12 rounded-2xl bg-dkm-green-soft flex items-center justify-center mb-4">
             <ShieldCheck className="w-6 h-6 text-primary" />
@@ -78,6 +81,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <>Lanjut Masuk <ArrowRight className="w-4 h-4 ml-1" /></>
           )}
         </Button>
+        </div>
       </section>
     </div>
   );

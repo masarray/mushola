@@ -410,6 +410,7 @@ export function QurbanScreen() {
         <>
           <section className="relative overflow-hidden rounded-[30px] border border-border bg-card shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(29,91,61,0.11),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,248,244,0.98))]" />
+            <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
             <div className="relative p-5">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
                 <BadgeCheck className="h-3.5 w-3.5" />
@@ -485,7 +486,9 @@ export function QurbanScreen() {
             </div>
           </section>
 
-          <section className="rounded-[28px] border border-border bg-card p-4 shadow-card">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-4 shadow-card">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.05),transparent_30%)] pointer-events-none" />
+            <div className="relative">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -609,6 +612,7 @@ export function QurbanScreen() {
                 Mode pengurus hanya untuk memantau progres. Aksi menuju daftar nama shohibul dan form input pembayaran dikunci untuk bendahara saja.
               </div>
             )}
+            </div>
           </section>
 
           {view === "history" ? (
@@ -745,8 +749,9 @@ export function QurbanScreen() {
             Kembali ke daftar shohibul
           </button>
 
-          <section className="rounded-[28px] border border-border bg-card p-5 shadow-card">
-            <div className="space-y-4">
+          <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-5 shadow-card">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.07),transparent_26%)] pointer-events-none" />
+            <div className="relative space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-xl font-black tracking-tight text-foreground">

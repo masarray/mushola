@@ -9,6 +9,7 @@ interface PublicQurbanScreenProps {
   data: PublicData | null;
   loading: boolean;
   isRefreshing?: boolean;
+  initialSelectedGroup?: string;
 }
 
 type PublicShohibulCard = {
@@ -17,6 +18,14 @@ type PublicShohibulCard = {
   statusLabel: "Terdaftar" | "Dalam Proses" | "Lunas";
   progressPct: number;
   sapiNumber: string;
+};
+
+const PUBLIC_QURBAN_ROWS_CACHE_KEY = "dkm_public_qurban_rows_cache_v1";
+const PUBLIC_QURBAN_ROWS_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+
+type PublicQurbanRowsCache = {
+  savedAt: number;
+  rows: QurbanRow[];
 };
 
 function clampPct(value: number) {
@@ -76,6 +85,7 @@ export function PublicQurbanScreen({
   data,
   loading,
   isRefreshing = false,
+  initialSelectedGroup,
 }: PublicQurbanScreenProps) {
   const [publicRows, setPublicRows] = useState<QurbanRow[]>(
     Array.isArray(data?.qurbanRows) ? data.qurbanRows : [],
@@ -91,13 +101,49 @@ export function PublicQurbanScreen({
 
   useEffect(() => {
     if (!selectedGroup && groups.length > 0) {
-      setSelectedGroup(groups[0]?.groupName || "");
+      setSelectedGroup(initialSelectedGroup || groups[0]?.groupName || "");
     }
-  }, [groups, selectedGroup]);
+  }, [groups, selectedGroup, initialSelectedGroup]);
+
+  useEffect(() => {
+    if (initialSelectedGroup) {
+      setSelectedGroup(initialSelectedGroup);
+    }
+  }, [initialSelectedGroup]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(PUBLIC_QURBAN_ROWS_CACHE_KEY);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as PublicQurbanRowsCache;
+      if (
+        parsed &&
+        Array.isArray(parsed.rows) &&
+        typeof parsed.savedAt === "number" &&
+        Date.now() - parsed.savedAt < PUBLIC_QURBAN_ROWS_CACHE_TTL_MS
+      ) {
+        setPublicRows(parsed.rows);
+      }
+    } catch {
+      // Ignore invalid cache payload.
+    }
+  }, []);
 
   useEffect(() => {
     if (Array.isArray(data?.qurbanRows) && data.qurbanRows.length > 0) {
       setPublicRows(data.qurbanRows);
+      try {
+        localStorage.setItem(
+          PUBLIC_QURBAN_ROWS_CACHE_KEY,
+          JSON.stringify({
+            savedAt: Date.now(),
+            rows: data.qurbanRows,
+          } satisfies PublicQurbanRowsCache),
+        );
+      } catch {
+        // Ignore storage write failure.
+      }
     }
   }, [data?.qurbanRows]);
 
@@ -108,7 +154,9 @@ export function PublicQurbanScreen({
       if (!groups.length) return;
       if (Array.isArray(data?.qurbanRows) && data.qurbanRows.length > 0) return;
 
-      setRowsLoading(true);
+      if (publicRows.length === 0) {
+        setRowsLoading(true);
+      }
       setRowsLoadError(null);
 
       try {
@@ -123,7 +171,19 @@ export function PublicQurbanScreen({
 
         if (cancelled) return;
 
-        setPublicRows(results.flat().filter((row) => row?.isActive !== false));
+        const merged = results.flat().filter((row) => row?.isActive !== false);
+        setPublicRows(merged);
+        try {
+          localStorage.setItem(
+            PUBLIC_QURBAN_ROWS_CACHE_KEY,
+            JSON.stringify({
+              savedAt: Date.now(),
+              rows: merged,
+            } satisfies PublicQurbanRowsCache),
+          );
+        } catch {
+          // Ignore storage write failure.
+        }
       } catch {
         if (!cancelled) {
           setRowsLoadError("Daftar warga qurban publik belum berhasil dimuat.");
@@ -140,7 +200,7 @@ export function PublicQurbanScreen({
     return () => {
       cancelled = true;
     };
-  }, [groups, data?.qurbanRows]);
+  }, [groups, data?.qurbanRows, publicRows.length]);
 
   const cards = useMemo<PublicShohibulCard[]>(() => {
     return publicRows.map((row) => {
@@ -173,7 +233,10 @@ export function PublicQurbanScreen({
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in pb-2">
-      <section className="rounded-[30px] border border-border bg-card p-5 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.08),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.98))]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
@@ -251,9 +314,12 @@ export function PublicQurbanScreen({
             <ProgressBar value={paymentPct} color={getProgressColor(paymentPct)} thin />
           </div>
         </div>
+        </div>
       </section>
 
-      <section className="rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+      <section className="relative overflow-hidden rounded-[30px] border border-border bg-card p-5 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.05),transparent_30%)] pointer-events-none" />
+        <div className="relative">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/8 text-primary">
             <Users className="h-5 w-5" />
@@ -331,6 +397,7 @@ export function PublicQurbanScreen({
               </div>
             </article>
           ))}
+        </div>
         </div>
       </section>
     </div>
