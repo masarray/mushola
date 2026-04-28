@@ -1,3 +1,4 @@
-# Welcome to your Lovable project
+# Aplikasi Keuangan Masjid
 
-TODO: Document your project here
+Transparansi keuangan masjid
+Mudah digunakan, dimana saja, kapan saja
