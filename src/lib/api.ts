@@ -223,6 +223,7 @@ export async function loadInternalData(email: string): Promise<InternalData> {
 /* ── Transaction Submit ── */
 export async function apiSubmitTransaction(payload: {
   email: string;
+  clientRequestId?: string;
   tanggal: string;
   jenis: string;
   kategori: string;
@@ -234,6 +235,7 @@ export async function apiSubmitTransaction(payload: {
   const params = new URLSearchParams({
     api: 'submit_transaction',
     email: payload.email,
+    clientRequestId: payload.clientRequestId || '',
     tanggal: payload.tanggal,
     jenis: payload.jenis,
     kategori: payload.kategori,
@@ -327,6 +329,7 @@ export async function apiGetShohibulDetail(shohibulId: string): Promise<{ succes
 /* ── Qurban Payment Submit ── */
 export async function apiSubmitQurbanPayment(payload: {
   email: string;
+  clientRequestId?: string;
   tanggal: string;
   shohibulId: string;
   nominalBayar: number;
@@ -336,6 +339,7 @@ export async function apiSubmitQurbanPayment(payload: {
   const params = new URLSearchParams({
     api: 'submit_qurban_payment',
     email: payload.email,
+    clientRequestId: payload.clientRequestId || '',
     tanggal: payload.tanggal,
     shohibulId: payload.shohibulId,
     nominalBayar: String(payload.nominalBayar),

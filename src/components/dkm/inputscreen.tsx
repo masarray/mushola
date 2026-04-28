@@ -51,6 +51,14 @@ function sanitizeNumericInput(value: string) {
   return value.replace(/[^\d]/g, '');
 }
 
+function createClientRequestId(prefix: string) {
+  const random =
+    typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `${prefix}-${random}`;
+}
+
 export function InputScreen() {
   const { user, refreshInternal } = useAuth();
   const { toast } = useToast();
@@ -58,6 +66,7 @@ export function InputScreen() {
 
   const nominalRef = useRef<HTMLInputElement | null>(null);
   const categoryRef = useRef<HTMLInputElement | null>(null);
+  const pendingSubmitRef = useRef<{ fingerprint: string; clientRequestId: string } | null>(null);
 
   const [mode, setMode] = useState<TransactionMode>('HARIAN');
   const [jenis, setJenis] = useState<TransactionType>('PEMASUKAN');
@@ -220,11 +229,31 @@ export function InputScreen() {
       return;
     }
 
+    const submitFingerprint = JSON.stringify({
+      email: user.email,
+      tanggal,
+      jenis,
+      kategori: effectiveKategori,
+      event,
+      metode,
+      nominal: num,
+      keterangan: keterangan.trim(),
+    });
+    const pending =
+      pendingSubmitRef.current?.fingerprint === submitFingerprint
+        ? pendingSubmitRef.current
+        : {
+            fingerprint: submitFingerprint,
+            clientRequestId: createClientRequestId('TRX'),
+          };
+    pendingSubmitRef.current = pending;
+
     setSubmitting(true);
 
     try {
       const res = await apiSubmitTransaction({
         email: user.email,
+        clientRequestId: pending.clientRequestId,
         tanggal,
         jenis,
         kategori: effectiveKategori,
@@ -235,13 +264,25 @@ export function InputScreen() {
       });
 
       if (res.success) {
+        const transactionId =
+          typeof res.result?.transactionId === 'string'
+            ? res.result.transactionId
+            : 'Data masuk ke rekap';
+        const isDuplicate = res.result?.duplicate === true;
+        const duplicateSummary = [
+          transactionId,
+          effectiveKategori,
+          formatCurrency(num),
+          keterangan.trim(),
+        ]
+          .filter(Boolean)
+          .join(' • ');
+
         toast({
-          title: 'Transaksi berhasil disimpan',
-          description:
-            typeof res.result?.transactionId === 'string'
-              ? res.result.transactionId
-              : 'Data masuk ke rekap',
+          title: isDuplicate ? 'Transaksi ini sudah tersimpan' : 'Transaksi berhasil disimpan',
+          description: isDuplicate ? duplicateSummary : transactionId,
         });
+        pendingSubmitRef.current = null;
         resetFormSmart();
         refreshInternal();
       } else {

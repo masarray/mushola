@@ -55,6 +55,14 @@ function onlyDigits(value: string) {
   return value.replace(/[^\d]/g, "");
 }
 
+function createClientRequestId(prefix: string) {
+  const random =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `${prefix}-${random}`;
+}
+
 function formatQuickLabel(value: number, isPas = false) {
   if (isPas) return "Pas";
   if (value >= 1000000) {
@@ -213,6 +221,7 @@ export function QurbanScreen() {
   const { toast } = useToast();
   const isBendahara = user?.role === "BENDAHARA";
   const nominalRef = useRef<HTMLInputElement | null>(null);
+  const pendingSubmitRef = useRef<{ fingerprint: string; clientRequestId: string } | null>(null);
 
   const [view, setView] = useState<ViewTab>("select");
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -334,8 +343,26 @@ export function QurbanScreen() {
     setSubmitting(true);
     try {
       const today = new Date().toISOString().split("T")[0];
+      const submitFingerprint = JSON.stringify({
+        email: user.email,
+        tanggal: today,
+        shohibulId: selected.shohibulId,
+        nominalBayar: parsed,
+        metode,
+        keterangan: "",
+      });
+      const pending =
+        pendingSubmitRef.current?.fingerprint === submitFingerprint
+          ? pendingSubmitRef.current
+          : {
+              fingerprint: submitFingerprint,
+              clientRequestId: createClientRequestId("QPM"),
+            };
+      pendingSubmitRef.current = pending;
+
       const res = await apiSubmitQurbanPayment({
         email: user.email,
+        clientRequestId: pending.clientRequestId,
         tanggal: today,
         shohibulId: selected.shohibulId,
         nominalBayar: parsed,
@@ -344,14 +371,28 @@ export function QurbanScreen() {
       });
 
       if (res.success) {
+        const paymentId =
+          typeof res.result?.paymentId === "string"
+            ? res.result.paymentId
+            : "Data masuk ke riwayat pembayaran.";
+        const isDuplicate = res.result?.duplicate === true;
+        const duplicateSummary = [
+          paymentId,
+          selected.nama,
+          formatCurrency(parsed),
+          metode,
+        ]
+          .filter(Boolean)
+          .join(" • ");
+
         toast({
-          title: "Pembayaran berhasil disimpan",
-          description:
-            typeof res.result?.paymentId === "string"
-              ? res.result.paymentId
-              : "Data masuk ke riwayat pembayaran.",
+          title: isDuplicate
+            ? "Pembayaran ini sudah tersimpan"
+            : "Pembayaran berhasil disimpan",
+          description: isDuplicate ? duplicateSummary : paymentId,
         });
 
+        pendingSubmitRef.current = null;
         setNominal("");
         setJustSaved(true);
         await refreshInternal();
