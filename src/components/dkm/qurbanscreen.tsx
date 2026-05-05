@@ -11,6 +11,7 @@ import { formatCurrency, safeNumber } from "@/lib/format";
 import { buildWhatsAppUrl, copyTextSmart } from "@/lib/mobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -216,6 +217,134 @@ function ProgressStrip({ value, tone }: { value: number; tone: string }) {
   return <ProgressBar value={Number(value) || 0} color={color} thin />;
 }
 
+function QurbanWorkspaceSkeleton() {
+  return (
+    <div className="space-y-4 animate-fade-in">
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(29,91,61,0.11),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,248,244,0.98))]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative space-y-5 p-[clamp(1rem,4vw,1.25rem)]">
+          <Skeleton className="h-7 w-36 rounded-full bg-primary/10" />
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1 space-y-3">
+              <Skeleton className="h-8 w-56 rounded-xl" />
+              <Skeleton className="h-4 w-full max-w-[20rem] rounded-lg" />
+              <Skeleton className="h-4 w-4/5 max-w-[18rem] rounded-lg" />
+            </div>
+            <Skeleton className="h-12 w-16 rounded-[20px] bg-amber-100/80" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1].map((item) => (
+              <div
+                key={item}
+                className="rounded-[22px] border border-border/80 bg-white/80 p-[clamp(0.85rem,3vw,1rem)] shadow-[0_10px_28px_rgba(15,23,42,0.04)]"
+              >
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-9 w-9 rounded-2xl" />
+                  <Skeleton className="h-3 w-24 rounded-md" />
+                </div>
+                <Skeleton className="mt-3 h-7 w-24 rounded-lg" />
+                <Skeleton className="mt-2 h-4 w-full rounded-lg" />
+                <Skeleton className="mt-1 h-4 w-3/4 rounded-lg" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sticky top-3 z-10 overflow-hidden rounded-[28px] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(255,251,235,0.98))] p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_16px_34px_rgba(16,185,129,0.10)] backdrop-blur">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.10),transparent_24%)] pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-3">
+            <Skeleton className="h-3 w-28 rounded-md bg-emerald-200/70" />
+            <Skeleton className="h-6 w-48 rounded-lg bg-white/80" />
+            <Skeleton className="h-8 w-36 rounded-lg bg-white/85" />
+            <Skeleton className="h-7 w-52 rounded-full bg-white/80" />
+          </div>
+          <Skeleton className="h-12 w-24 rounded-2xl bg-emerald-700/90" />
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.05),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,246,241,0.96))] pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-20 rounded-md" />
+              <Skeleton className="h-6 w-24 rounded-lg" />
+            </div>
+            <Skeleton className="h-11 w-44 rounded-full" />
+          </div>
+
+          <div className="flex gap-2 overflow-hidden">
+            {[0, 1, 2].map((item) => (
+              <Skeleton key={item} className="h-10 w-24 rounded-full" />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {[0, 1, 2, 3].map((item) => (
+              <div key={item} className="rounded-2xl bg-muted/35 p-3">
+                <Skeleton className="h-3 w-16 rounded-md" />
+                <Skeleton className="mt-2 h-6 w-12 rounded-lg" />
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            {[0, 1].map((item) => (
+              <div key={item} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-3 w-24 rounded-md" />
+                  <Skeleton className="h-3 w-10 rounded-md" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-[clamp(0.95rem,3.6vw,1rem)] shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.05),transparent_28%)] pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
+        <div className="relative space-y-3">
+          {[0, 1, 2, 3].map((item) => (
+            <div
+              key={item}
+              className="rounded-[24px] border border-border bg-background px-4 py-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1 space-y-3">
+                  <Skeleton className="h-6 w-40 rounded-lg" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Skeleton className="h-6 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-24 rounded-full" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-3 w-24 rounded-md" />
+                      <Skeleton className="h-3 w-8 rounded-md" />
+                    </div>
+                    <Skeleton className="h-2 w-full rounded-full" />
+                  </div>
+                  <Skeleton className="h-3 w-28 rounded-md" />
+                </div>
+                <div className="shrink-0 space-y-2 text-right">
+                  <Skeleton className="ml-auto h-6 w-16 rounded-lg" />
+                  <Skeleton className="ml-auto h-3 w-10 rounded-md" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export function QurbanScreen() {
   const { user, internalData, refreshInternal, internalLoading } = useAuth();
   const { toast } = useToast();
@@ -305,6 +434,10 @@ export function QurbanScreen() {
   );
 
   if (!internalData) {
+    if (internalLoading && isBendahara) {
+      return <QurbanWorkspaceSkeleton />;
+    }
+
     return (
       <div className="rounded-[28px] border border-border bg-card p-5 shadow-card">
         <div className="text-sm text-muted-foreground">
@@ -752,9 +885,16 @@ export function QurbanScreen() {
                           >
                             {row.statusBayarSmart}
                           </span>
-                          <span className="mobile-money text-[clamp(0.8rem,3.5vw,0.9rem)] font-bold text-destructive">
-                            Kurang {formatCurrency(row.sisaBayarSmart)}
-                          </span>
+                          {row.statusBayarSmart === "Lunas" ||
+                          row.sisaBayarSmart <= 0 ? (
+                            <span className="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
+                              Lunas
+                            </span>
+                          ) : (
+                            <span className="mobile-money text-[clamp(0.8rem,3.5vw,0.9rem)] font-bold text-destructive">
+                              Kurang {formatCurrency(row.sisaBayarSmart)}
+                            </span>
+                          )}
                         </div>
 
                         <div className="mt-3">
@@ -784,12 +924,21 @@ export function QurbanScreen() {
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <div className="mobile-money text-[clamp(0.98rem,4.4vw,1.125rem)] font-black leading-[0.96] text-foreground">
-                          {formatCurrency(row.sisaBayarSmart)}
-                        </div>
-                        <div className="mt-1 text-[11px] text-muted-foreground">
-                          sisa
-                        </div>
+                        {row.statusBayarSmart === "Lunas" ||
+                        row.sisaBayarSmart <= 0 ? (
+                          <span className="inline-flex rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-emerald-700">
+                            Lunas
+                          </span>
+                        ) : (
+                          <>
+                            <div className="mobile-money text-[clamp(0.98rem,4.4vw,1.125rem)] font-black leading-[0.96] text-foreground">
+                              {formatCurrency(row.sisaBayarSmart)}
+                            </div>
+                            <div className="mt-1 text-[11px] text-muted-foreground">
+                              sisa
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </button>
