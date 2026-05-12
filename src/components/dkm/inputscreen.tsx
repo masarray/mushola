@@ -54,6 +54,14 @@ const CONTEXT_OPTIONS = [
 
 const METHOD_OPTIONS = ['Cash', 'Transfer'] as const;
 
+const KETERANGAN_PLACEHOLDERS: Record<string, string> = {
+  'Pembelian Sapi': 'Contoh: sapi #2',
+  'Upah Jagal': 'Contoh: Jagal Juleha',
+  Perlengkapan: 'Contoh: plastik, tali',
+  'Tenaga Bantu': 'Contoh: Bang Ari',
+  Konsumsi: 'Contoh: konsumsi panitia qurban',
+};
+
 const QUICK_AMOUNTS = [50000, 100000, 200000, 500000, 1000000];
 const STORAGE_KEY = 'dkm_input_preferences_v1';
 
@@ -160,10 +168,15 @@ export function InputScreen() {
   const isQurbanContext = mode === 'QURBAN';
   const qurbanImpactNote =
     jenis === 'PENGELUARAN'
-      ? 'Transaksi ini akan mengurangi Dana Qurban.'
-      : 'Transaksi ini akan menambah Dana Qurban. Pembayaran peserta tetap lebih rapi lewat Workspace Qurban.';
+      ? 'Saldo Qurban berkurang.'
+      : 'Saldo Qurban bertambah.';
   const contextIndex = CONTEXT_OPTIONS.findIndex(([value]) => value === mode);
   const methodIndex = METHOD_OPTIONS.findIndex((value) => value === metode);
+  const keteranganPlaceholder =
+    KETERANGAN_PLACEHOLDERS[effectiveKategori] ||
+    (isQurbanContext
+      ? 'Contoh: detail transaksi qurban'
+      : 'Contoh: bayar listrik bulan April');
 
   const canSubmit = useMemo(() => {
     return Boolean(
@@ -455,21 +468,21 @@ export function InputScreen() {
               )}
             </div>
 
-            <div className="rounded-[24px] border bg-background p-3">
+            <div className="rounded-[22px] border border-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,246,241,0.86))] px-4 py-3 shadow-inner">
               <Input
                 ref={nominalRef}
                 inputMode="numeric"
                 value={nominal}
                 onChange={(e) => setNominal(sanitizeNumericInput(e.target.value))}
                 placeholder="0"
-                className="mobile-money h-14 border-0 bg-transparent px-1 text-[clamp(1.85rem,8vw,2.2rem)] font-black tracking-tight shadow-none focus-visible:ring-0"
+                className="mobile-money h-12 border-0 bg-transparent px-0 text-[clamp(1.75rem,7.4vw,2.1rem)] font-black tracking-tight shadow-none focus-visible:ring-0"
               />
-              <div className="mt-2 px-1 text-sm font-semibold text-muted-foreground min-h-[20px]">
+              <div className="mt-1 min-h-[19px] text-sm font-semibold text-muted-foreground">
                 {nominalValue > 0 ? formatCurrency(nominalValue) : 'Masukkan nominal transaksi'}
               </div>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <div className="grid grid-cols-5 gap-2">
               {QUICK_AMOUNTS.map((amount) => {
                 const active = Number(nominal) === amount;
                 return (
@@ -477,10 +490,10 @@ export function InputScreen() {
                     key={amount}
                     type="button"
                     onClick={() => handleQuickAmount(amount)}
-                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                    className={`min-h-9 rounded-full border px-1 text-xs font-black transition-all duration-200 active:scale-[0.97] ${
                       active
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                        ? 'border-primary bg-primary text-primary-foreground shadow-[0_10px_22px_rgba(22,101,52,0.16)]'
+                        : 'border-transparent bg-muted/55 text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     {formatCompactAmount(amount)}
@@ -491,17 +504,19 @@ export function InputScreen() {
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              <Tag className="h-4 w-4" />
-              Uang Ini Untuk Apa?
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                <Tag className="h-4 w-4" />
+                {isQurbanContext ? 'Pos Qurban' : 'Kategori'}
+              </div>
+              {isQurbanContext && (
+                <span className="text-[11px] font-semibold text-muted-foreground">
+                  {qurbanImpactNote}
+                </span>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">
-              {isQurbanContext
-                ? 'Pilih pos qurban yang paling sesuai agar saldo dana qurban tetap akurat.'
-                : 'Pilih jenis transaksi yang paling sesuai.'}
-            </p>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {chips.map((c) => {
                 const active = !manualMode && kategori === c;
                 return (
@@ -509,10 +524,10 @@ export function InputScreen() {
                     key={c}
                     type="button"
                     onClick={() => handleQuickCategory(c)}
-                    className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                    className={`min-h-10 rounded-full border px-3 text-xs font-black transition-all duration-200 active:scale-[0.98] ${
                       active
-                        ? 'bg-primary text-primary-foreground shadow-soft'
-                        : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                        ? 'border-primary bg-primary text-primary-foreground shadow-[0_10px_22px_rgba(22,101,52,0.16)]'
+                        : 'border-transparent bg-muted/55 text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     {c}
@@ -523,10 +538,10 @@ export function InputScreen() {
               <button
                 type="button"
                 onClick={() => handleQuickCategory(MANUAL_CATEGORY)}
-                className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                className={`min-h-10 rounded-full border px-3 text-xs font-black transition-all duration-200 active:scale-[0.98] ${
                   manualMode
-                    ? 'bg-primary text-primary-foreground shadow-soft'
-                    : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                    ? 'border-primary bg-primary text-primary-foreground shadow-[0_10px_22px_rgba(22,101,52,0.16)]'
+                    : 'border-transparent bg-muted/55 text-muted-foreground hover:bg-muted'
                 }`}
               >
                 Lainnya
@@ -543,23 +558,10 @@ export function InputScreen() {
               />
             )}
 
-            {!manualMode && kategori.trim() && (
-              <div className="text-xs text-muted-foreground">
-                Kategori terpilih:{' '}
-                <span className="font-semibold text-foreground">{kategori.trim()}</span>
-              </div>
-            )}
-
             {manualMode && manualCategory.trim() && (
               <div className="text-xs text-muted-foreground">
                 Kategori manual:{' '}
                 <span className="font-semibold text-foreground">{manualCategory.trim()}</span>
-              </div>
-            )}
-
-            {isQurbanContext && (
-              <div className="rounded-2xl border border-amber-200/70 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-800">
-                {qurbanImpactNote}
               </div>
             )}
           </div>
@@ -601,7 +603,7 @@ export function InputScreen() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
@@ -616,20 +618,23 @@ export function InputScreen() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                <FileText className="h-4 w-4" />
-                Keterangan
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                  <FileText className="h-4 w-4" />
+                  Keterangan
+                </div>
+                <span className="rounded-full bg-muted/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                  Opsional
+                </span>
               </div>
-              <Input
-                value={keterangan}
-                onChange={(e) => setKeterangan(e.target.value)}
-                placeholder={
-                  isQurbanContext
-                    ? 'Contoh: bayar sapi qurban / upah jagal'
-                    : 'Contoh: bayar listrik bulan April'
-                }
-                className="h-12 rounded-2xl bg-background"
-              />
+              <div className="rounded-[22px] border bg-background p-3 transition-colors focus-within:border-primary/35 focus-within:bg-card">
+                <Input
+                  value={keterangan}
+                  onChange={(e) => setKeterangan(e.target.value)}
+                  placeholder={keteranganPlaceholder}
+                  className="h-11 border-0 bg-transparent px-1 text-[15px] font-semibold shadow-none placeholder:text-muted-foreground/70 focus-visible:ring-0"
+                />
+              </div>
             </div>
           </div>
 
