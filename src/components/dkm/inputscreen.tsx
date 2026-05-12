@@ -52,6 +52,8 @@ const CONTEXT_OPTIONS = [
   ['QURBAN', 'Qurban'],
 ] as const satisfies readonly [TransactionMode, string][];
 
+const METHOD_OPTIONS = ['Cash', 'Transfer'] as const;
+
 const QUICK_AMOUNTS = [50000, 100000, 200000, 500000, 1000000];
 const STORAGE_KEY = 'dkm_input_preferences_v1';
 
@@ -161,6 +163,7 @@ export function InputScreen() {
       ? 'Transaksi ini akan mengurangi Dana Qurban.'
       : 'Transaksi ini akan menambah Dana Qurban. Pembayaran peserta tetap lebih rapi lewat Workspace Qurban.';
   const contextIndex = CONTEXT_OPTIONS.findIndex(([value]) => value === mode);
+  const methodIndex = METHOD_OPTIONS.findIndex((value) => value === metode);
 
   const canSubmit = useMemo(() => {
     return Boolean(
@@ -567,24 +570,34 @@ export function InputScreen() {
               Metode
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              {(['Cash', 'Transfer'] as const).map((m) => {
+            <div className="relative rounded-full border border-border/70 bg-muted/55 p-1 shadow-inner">
+              <div
+                className="absolute bottom-1 top-1 rounded-full bg-gradient-to-b from-primary to-dkm-green-strong shadow-[0_10px_24px_rgba(22,101,52,0.18)] transition-all duration-300 ease-out"
+                style={{
+                  width: 'calc((100% - 0.25rem) / 2)',
+                  transform: `translateX(${Math.max(0, methodIndex) * 100}%)`,
+                }}
+              />
+              <div className="relative grid grid-cols-2">
+              {METHOD_OPTIONS.map((m) => {
                 const active = metode === m;
                 return (
                   <button
                     key={m}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => setMetode(m)}
-                    className={`rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
+                    className={`relative z-10 min-h-[42px] rounded-full px-4 py-2 text-sm font-black transition-all duration-300 active:scale-[0.97] ${
                       active
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted/50 text-muted-foreground'
+                        ? 'text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {m}
                   </button>
                 );
               })}
+              </div>
             </div>
           </div>
 
