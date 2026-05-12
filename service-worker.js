@@ -1,4 +1,4 @@
-const VERSION = "mushola-pwa-v1";
+const VERSION = "mushola-pwa-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_BASE = "/mushola/";
