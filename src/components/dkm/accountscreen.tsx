@@ -47,7 +47,7 @@ export function AccountScreen() {
         <div className="space-y-2 text-xs text-muted-foreground">
           {user.role === 'BENDAHARA' ? (
             <>
-              <p>✅ Input transaksi harian & Ramadhan</p>
+              <p>✅ Input transaksi operasional, Ramadhan, dan Qurban</p>
               <p>✅ Input pembayaran qurban</p>
               <p>✅ Lihat rekap keuangan</p>
               <p>✅ Koreksi transaksi</p>

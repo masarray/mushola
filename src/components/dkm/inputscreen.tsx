@@ -17,11 +17,11 @@ import {
   Zap,
   Wallet,
   X,
-  ChevronDown,
+  Building2,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-type TransactionMode = 'HARIAN' | 'RAMADHAN';
+type TransactionMode = 'HARIAN' | 'RAMADHAN' | 'QURBAN';
 type TransactionType = 'PEMASUKAN' | 'PENGELUARAN';
 
 const MANUAL_CATEGORY = '__LAINNYA__';
@@ -36,7 +36,21 @@ const QUICK_CATEGORIES: Record<string, string[]> = {
     'Lomba Ramadhan Anak TPA',
     'Halal Bihalal',
   ],
+  QURBAN_PEMASUKAN: ['Tambahan Biaya Potong Qurban', 'Donasi Qurban', 'Subsidi Qurban'],
+  QURBAN_PENGELUARAN: [
+    'Pembelian Sapi',
+    'Upah Jagal',
+    'Perlengkapan',
+    'Tenaga Bantu',
+    'Konsumsi',
+  ],
 };
+
+const CONTEXT_OPTIONS = [
+  ['HARIAN', 'Operasional'],
+  ['RAMADHAN', 'Ramadhan'],
+  ['QURBAN', 'Qurban'],
+] as const satisfies readonly [TransactionMode, string][];
 
 const QUICK_AMOUNTS = [50000, 100000, 200000, 500000, 1000000];
 const STORAGE_KEY = 'dkm_input_preferences_v1';
@@ -79,7 +93,6 @@ export function InputScreen() {
   const [keterangan, setKeterangan] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
-  const [showContextPicker, setShowContextPicker] = useState(false);
 
   useEffect(() => {
     try {
@@ -92,7 +105,9 @@ export function InputScreen() {
         kategori?: string;
       };
 
-      if (saved.mode === 'HARIAN' || saved.mode === 'RAMADHAN') setMode(saved.mode);
+      if (saved.mode === 'HARIAN' || saved.mode === 'RAMADHAN' || saved.mode === 'QURBAN') {
+        setMode(saved.mode);
+      }
       if (saved.jenis === 'PEMASUKAN' || saved.jenis === 'PENGELUARAN') setJenis(saved.jenis);
       if (saved.metode === 'Cash' || saved.metode === 'Transfer') setMetode(saved.metode);
       if (typeof saved.kategori === 'string') setKategori(saved.kategori);
@@ -134,11 +149,18 @@ export function InputScreen() {
     return () => window.clearTimeout(timer);
   }, [manualMode]);
 
-  const event = mode === 'RAMADHAN' ? 'Ramadhan' : 'Operasional';
+  const event =
+    mode === 'RAMADHAN' ? 'Ramadhan' : mode === 'QURBAN' ? 'Qurban' : 'Operasional';
   const chipKey = `${mode}_${jenis}`;
   const chips = QUICK_CATEGORIES[chipKey] || [];
   const nominalValue = Number(nominal || 0);
   const effectiveKategori = manualMode ? manualCategory.trim() : kategori.trim();
+  const isQurbanContext = mode === 'QURBAN';
+  const qurbanImpactNote =
+    jenis === 'PENGELUARAN'
+      ? 'Transaksi ini akan mengurangi Dana Qurban.'
+      : 'Transaksi ini akan menambah Dana Qurban. Pembayaran peserta tetap lebih rapi lewat Workspace Qurban.';
+  const contextIndex = CONTEXT_OPTIONS.findIndex(([value]) => value === mode);
 
   const canSubmit = useMemo(() => {
     return Boolean(
@@ -207,7 +229,6 @@ export function InputScreen() {
 
   const handleContextChange = useCallback((value: TransactionMode) => {
     setMode(value);
-    setShowContextPicker(false);
     setKategori('');
     setManualCategory('');
     setManualMode(false);
@@ -320,7 +341,7 @@ export function InputScreen() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,101,52,0.10),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,246,241,0.95))]" />
         <div className="relative space-y-4 p-[clamp(1rem,4vw,1.25rem)]">
           <div className="flex items-start justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
                 <Zap className="h-3.5 w-3.5" />
                 Mode Cepat
@@ -333,44 +354,49 @@ export function InputScreen() {
               </p>
             </div>
 
-            <div className="relative min-w-[128px] text-right">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Konteks
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowContextPicker((prev) => !prev)}
-                className="mt-1 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-bold text-foreground hover:bg-muted/50"
-              >
-                {event}
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-              </button>
+            <div className="flex shrink-0 items-center gap-2 rounded-2xl bg-muted/50 px-3 py-2 text-xs font-bold text-foreground">
+              <Building2 className="h-4 w-4 text-primary" />
+              {event}
+            </div>
+          </div>
 
-              {showContextPicker && (
-                <div className="absolute right-0 top-full z-10 mt-2 w-40 rounded-2xl border border-border bg-card p-2 text-left shadow-soft">
-                  <div className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-                    Pilih konteks
-                  </div>
-                  {([
-                    ['HARIAN', 'Operasional'],
-                    ['RAMADHAN', 'Ramadhan'],
-                  ] as const).map(([value, label]) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => handleContextChange(value)}
-                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold transition-all ${
-                        mode === value
-                          ? 'bg-primary/10 text-primary'
-                          : 'text-foreground hover:bg-muted/50'
-                      }`}
-                    >
-                      <span>{label}</span>
-                      {mode === value && <span className="text-xs font-bold">Aktif</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
+          <div className="space-y-2">
+            <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+              Konteks Saldo
+            </div>
+            <div className="relative rounded-full border border-border/70 bg-muted/55 p-1 shadow-inner">
+              <div
+                className={`absolute bottom-1 top-1 rounded-full shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-all duration-300 ease-out ${
+                  isQurbanContext
+                    ? 'bg-gradient-to-b from-amber-500 to-amber-600'
+                    : 'bg-gradient-to-b from-primary to-dkm-green-strong'
+                }`}
+                style={{
+                  width: 'calc((100% - 0.5rem) / 3)',
+                  transform: `translateX(${Math.max(0, contextIndex) * 100}%)`,
+                }}
+              />
+              <div className="relative grid grid-cols-3">
+                {CONTEXT_OPTIONS.map(([value, label]) => {
+                const active = mode === value;
+
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => handleContextChange(value)}
+                    className={`relative z-10 min-h-[42px] rounded-full px-2 py-2 text-xs font-black transition-all duration-300 active:scale-[0.97] ${
+                      active
+                        ? 'text-white'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+                })}
+              </div>
             </div>
           </div>
 
@@ -467,7 +493,9 @@ export function InputScreen() {
               Uang Ini Untuk Apa?
             </div>
             <p className="text-sm text-muted-foreground">
-              Pilih jenis transaksi yang paling sesuai.
+              {isQurbanContext
+                ? 'Pilih pos qurban yang paling sesuai agar saldo dana qurban tetap akurat.'
+                : 'Pilih jenis transaksi yang paling sesuai.'}
             </p>
 
             <div className="flex flex-wrap gap-2">
@@ -525,6 +553,12 @@ export function InputScreen() {
                 <span className="font-semibold text-foreground">{manualCategory.trim()}</span>
               </div>
             )}
+
+            {isQurbanContext && (
+              <div className="rounded-2xl border border-amber-200/70 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-800">
+                {qurbanImpactNote}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -576,7 +610,11 @@ export function InputScreen() {
               <Input
                 value={keterangan}
                 onChange={(e) => setKeterangan(e.target.value)}
-                placeholder="Contoh: bayar listrik bulan April"
+                placeholder={
+                  isQurbanContext
+                    ? 'Contoh: bayar sapi qurban / upah jagal'
+                    : 'Contoh: bayar listrik bulan April'
+                }
                 className="h-12 rounded-2xl bg-background"
               />
             </div>
